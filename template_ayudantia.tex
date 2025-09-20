@@ -1,0 +1,78 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Listado 0 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question
+Esta es una pregunta. Calcular $\frac{d}{dx}e^{2x}$.
+
+\begin{solution}
+    Esta es la solución.
+    \begin{align}
+        \frac{d}{dx}e^{2x} &=e^{2x}\cdot\frac{d}{dx}2x\\
+        &=2e^{2x}
+    \end{align}
+\end{solution}
+
+\question
+Esta es otra pregunta. Escriba un script en Matlab que sume los números del 1 al 100.
+Entregue el resultado.
+
+\begin{solution}
+    \begin{minted}{matlab}
+    suma = 0;
+    for n = 1:100
+        suma = suma + num;
+    end
+    print(suma)
+    \end{minted}
+    El resultado es 5050.
+\end{solution}
+
+\begin{solution}
+    Esta es una solución alternativa.
+    \begin{minted}{matlab}
+    sum(1:100)
+    \end{minted}
+    El resultado es 5050.
+\end{solution}
+
+\question
+Dibuje la función $x^3+2$ en el plano cartesiano.
+
+\begin{solution} 
+    La figura se dibuja a continuación.
+    
+    \begin{tikzpicture}
+        \draw[<->] (-2,0) -- (2,0);
+        \draw[<->] (0,-1) -- (0,3);
+        \draw[black, thick, domain=-1.4:1] plot (\x, {\x*\x*\x+2});
+    \end{tikzpicture}
+\end{solution}
+
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

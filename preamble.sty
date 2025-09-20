@@ -1,0 +1,38 @@
+%% --- Preamble --- %%
+%% --- Paquetes básicos --- %%
+\usepackage[spanish,es-tabla]{babel} %\decimalpoint
+\usepackage{graphicx, float} % Imágenes
+\usepackage{amsmath, amssymb, amsthm} % Mates
+\usepackage{hyperref}
+\usepackage{etoolbox}
+\usepackage[margin=1in,headheight=14.5pt,columnsep=0.8cm]{geometry}
+
+%% --- Opcional --- %%
+%\usepackage{svg}               % Figuras con svg
+\usepackage{minted}            % Código
+\usepackage{tikz-cd}
+\usetikzlibrary{babel}
+%\usepackage{pdfpages}          % Incluir pdfs
+%\usepackage{array}             % Required for text wrapping in tables
+
+%% --- Headers y footers --- %%
+\pagestyle{headandfoot}
+\extraheadheight{.5cm}
+\firstpageheadrule
+
+\firstpageheader{\includegraphics[width=0.08\textwidth]{imagenes/logo_die.png}}{}{Universidad de Concepcíon\\Facultad de Ingeniería\\Depto. de Ingeniería Eléctrica}
+\runningheader{}{}{}
+
+\firstpagefooter{}{}{}
+\runningfooter{}{\thepage}{}
+
+% Fuente texto
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+
+% Fuente código fuente
+\usepackage{inconsolata}
+
+% Estilo solucione{s
+\renewcommand{\solutiontitle}{\noindent\textbf{Solución:}{\enspace}}
