@@ -1,0 +1,198 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+    Ayudantía 1 - Procesamiento Digital de Señales
+    }
+\end{center}
+\listoftodos
+
+\begin{questions}
+
+\question
+Para las siguientes señales, identifique:
+
+\begin{itemize}
+    \item Si son continuas, tiempo discreto o digitales.
+    \item Tipo de soporte.
+    \item Si son periódicas.
+\end{itemize}
+
+\begin{parts}
+    \part $x_1(t) = \sin(3t)$
+    \begin{solution}
+        La señal depende del parámetro $t$ y toma valores continuos.
+        Por lo tanto, la señal es continua. Además $\sin(3t)$ es periódica. Es de soporte infinito.
+    \end{solution}
+
+    \part $x_2[n] = 0.4^n u[n]$
+    \begin{solution}
+        La señal está definida para $n\in\mathbb{Z}$, no puede ser continua. A medida que $n>0$ crece,
+        el valor de la señal se vuelve arbitrariamente pequeño, por lo que no puede ser representada
+        en cuantos (requeriría bits infinitos), no puede ser digital; la señal es tiempo discreto.
+        
+        La señal $x_2[n]$ es mayor a cero para todo $n$ positivo, y $x_2[n]$ es cero para $n$ negativo.
+        Es de soporte positivo.
+        
+        La señal no es periódica.
+    \end{solution}
+
+    \part $x_1(t)$, si se muestrea con $T=0.1$
+    \begin{solution}
+        Al muestrear se obtiene:
+        \begin{equation}
+        x_3[n]= x_1(nT)|_{T=0.1} = \sin(0.3n),\quad n\in\mathbb{Z}
+        \end{equation}
+        La señal es ahora de tiempo discreto.
+
+        La señal mantiene su soporte.
+
+        A primera vista puede parecer periódica. Recordemos que esto se cumple si existe un $m$ tal que para cualquier $n$:
+        \[
+            x_3[n] = x_3[n+m]
+        \]
+        Al reemplazar por la expresión obtenida:
+        \[
+            \sin(0.3n) = \sin(0.3n+0.3m)
+        \]
+        $\sin$ es $2\pi$ periódica, por lo que debe existir $m$ tal que:
+        \begin{align}
+            0.3m &= 2\pi k,\quad k\in \mathbb{N}\\
+            \Rightarrow \frac{0.3m}{2k}&=\pi
+        \end{align}
+
+        El lado izquierdo de la ecuación es racional, mientras que $\pi$ es irracional, es decir no existen
+        $m$ y $k$ que satisfagan la ecuación, por lo tanto, la señal no es periódica.
+    \end{solution}
+
+\end{parts}
+
+\question
+Se tiene un sistema tiempo discreto cuya respuesta
+a impulso es $h[n] =(0.5)^n u[n]$. Usando convolución discreta, calcule la salida del
+sistema $y[n]$ si se somete a una entrada $x[n]=u[n] - u[n-4]$.
+\begin{solution}
+    Conociendo la respuesta a impulso y entrada al sistema, la respuesta viene dada por la expresión:
+    \[
+        y[n] = x[n]*h[n]
+    \]
+    Desarrollando mediante la definición de convolución:
+    \begin{align}
+        y[n] &= \sum_{k=-\infty}^{\infty}x[k]h[n-k]   \\
+            &= \sum_{k=-\infty}^{\infty}(u[k]-u[k-4])h[n-k]
+    \end{align}
+    Notemos que $u[k]-u[k-4]$ es uno para $0\leq k \leq 3$, y cero en cualquier otro caso. Podemos simplificar la serie a una suma finita.
+    \begin{align}
+        y[n]&= \sum_{k=0}^{3}h[n-k]\\
+        &= \sum_{k=0}^{3}(0.5)^{n-k} u[n-k] \\
+        &=(0.5)^nu[n] +(0.5)^{n-1}u[n-1]    \\  \nonumber
+        &\qquad +(0.5)^{n-2}u[n-2] +(0.5)^{n-3}u[n-3]
+    \end{align}
+\end{solution}
+
+
+\question
+Calcular la transformada Z, región de convergencia (RC) e identificar polos de las señales a continuación. Bosquejar RC y polos.
+\todo{bosquejos}
+\begin{parts}
+    \part $(-0.8)^n u[n]$, utilizando definición de la transformada Z.
+    \begin{solution}
+        Al ser de soporte positivo, podemos utilizar la transformada Z unilateral:
+        \begin{align}
+            \mathcal{Z}\{(-0.8)^nu[n]\} &= \mathcal{Z^+}\{(-0.8)^n\}\\
+            &=\sum_{n=0}^{\infty}(-0.8)^n z^{-n}   \\
+            &=\sum_{n=0}^{\infty}(-0.8z^{-1})^n
+        \end{align}
+        Aplicando la identidad $\sum_{n=0}^{\infty}a^n=\frac{1}{1-a}$, obtenemos:
+        \begin{align}
+            \sum_{n=0}^{\infty}(-0.8z^{-1})^n& = \frac{1}{1+0.8z^{-1}}
+        \end{align}
+        Para la región de convergencia, $|-0.8z^{-1}|=|0.8z^{-1}|<1$. Es decir $|z|>0.8$. La RC es el exterior de
+        una circunferencia de radio $0.8$.
+
+        Existe un único polo cuando $1+0.8z^{-1}=0$. Es decir cuando $z=-0.8$.
+    \end{solution}
+
+    \part $\sin(\frac{\pi}{4}n)u[n] + (0.5)^n u[n-3]$, utilizando todos sus conocimientos.
+    \begin{solution}
+        Para calcular la transformada Z en este caso aplicamos linealidad.
+        Primero calculamos $\mathcal{Z}\{\sin(\frac{\pi}{4}n)u[n]\}$.
+        Recordemos que en general:
+        \begin{equation}
+            \mathcal{Z}\{\sin(\omega n)u[n]\}=\frac{z\sin(\omega)}{z^2-2\cos(\omega) z+1}
+        \end{equation}
+        Con RC $|z|>1$.
+
+        En nuestro caso $\omega = \frac{\pi}{4}$, y $\sin\frac{\pi}{4}=\cos\frac{\pi}{4}=\frac{\sqrt{2}}{2}$.
+        Por lo que:
+        \begin{equation}
+            \mathcal{Z}\{\sin(\frac{\pi}{4}n)u[n]\}=\frac{z\frac{\sqrt{2}}{2}}{z^2-\sqrt{2} z+1}
+        \end{equation}
+
+        
+
+        Ahora buscamos $\mathcal{Z}\{(0.5)^n u[n-3]\}$. Sabemos que:
+        \begin{equation}
+            \mathcal{Z}\{a^n u[n]\} = \frac{1}{1-az^{-1}}
+        \end{equation}
+        Con RC $|z|>|a|$.
+        Podemos aplicar la propiedad de desplazamiento en el tiempo para obtener la transformada Z.
+        Sin embargo, para esto debemos preocuparnos que todas las partes de la expresión tengan el desplazamiento:
+        \begin{align}
+            \mathcal{Z}\{(0.5)^n u[n-3]\} &= \mathcal{Z}\{(0.5)^3(0.5)^{n-3} u[n-3]\}\\
+            &= (0.5)^3\mathcal{Z}\{(0.5)^{n-3} u[n-3]\}\\
+            &=(0.5)^3z^{-3}\mathcal{Z}\{(0.5)^nu[n]\}\\
+            &=\frac{1}{8z^3}\cdot\frac{1}{1-0.5z^{-1}}
+        \end{align}
+
+        Finalmente, sumando ambas partes tenemos la transformada Z completa:
+        \begin{equation}
+            \frac{z\frac{\sqrt{2}}{2}}{z^2-\sqrt{2} z+1} + \frac{1}{8z^3}\cdot\frac{1}{1-0.5z^{-1}}
+        \end{equation}
+        Con RC $|z|>0.5$
+        Para la región de convergencia y polos, consideramos ambas partes. La RC será la intersección de ambas RC.
+        Ambas son el exterior de una circunferencia. La RC será el exterior de la circunferencia más grande: $|z|>1$.
+
+        Los polos vienen dados por $z^2-\sqrt{2} z+1=0$ y $1-0.5z^{-1}$. Los polos serían
+
+    \end{solution}
+\end{parts}
+
+\question
+Un sistema cumple:
+\[
+    y[n]-0.6y[n-1]=x[n],\quad y[-1]=1
+\]
+\begin{parts}
+    \part Obtener $H(z)$.
+    \part Calcular la respuesta $y[n]$ para entrada escalón usando transformada Z.
+\end{parts}
+
+\question
+Dada la función de transferencia:
+\[
+    H(z) =\frac{z}{z-0.6}
+\]
+
+\begin{parts}
+    \part Encontrar respuesta a impulso del sistema.
+    \part Analizar causalidad y estabilidad
+    \part ¿Que ocurriría si el polo estuviera en $z=1.2$?
+\end{parts}
+\end{questions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
