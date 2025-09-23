@@ -59,18 +59,17 @@ Para las siguientes señales, identifique:
         La señal mantiene su soporte.
 
         A primera vista puede parecer periódica. Recordemos que esto se cumple si existe un $m$ tal que para cualquier $n$:
-        \[
+        \begin{equation}
             x_3[n] = x_3[n+m]
-        \]
+        \end{equation}
         Al reemplazar por la expresión obtenida:
-        \[
+        \begin{equation}
             \sin(0.3n) = \sin(0.3n+0.3m)
-        \]
+        \end{equation}
         $\sin$ es $2\pi$ periódica, por lo que debe existir $m$ tal que:
-        \begin{align}
-            0.3m &= 2\pi k,\quad k\in \mathbb{N}\\
-            \Rightarrow \frac{0.3m}{2k}&=\pi
-        \end{align}
+        \begin{equation}
+            0.3m = 2\pi k,\quad k\in \mathbb{N}
+        \end{equation}
 
         El lado izquierdo de la ecuación es racional, mientras que $\pi$ es irracional, es decir no existen
         $m$ y $k$ que satisfagan la ecuación, por lo tanto, la señal no es periódica.
@@ -122,6 +121,10 @@ Calcular la transformada Z, región de convergencia (RC) e identificar polos de 
         una circunferencia de radio $0.8$.
 
         Existe un único polo cuando $1+0.8z^{-1}=0$. Es decir cuando $z=-0.8$.
+        
+        Se bosqueja RC y el polo:
+        
+        \includegraphics[width=10cm]{imagenes/1.3a.png}
     \end{solution}
 
     \part $\sin(\frac{\pi}{4}n)u[n] + (0.5)^n u[n-3]$, utilizando todos sus conocimientos.
@@ -153,30 +156,69 @@ Calcular la transformada Z, región de convergencia (RC) e identificar polos de 
             \mathcal{Z}\{(0.5)^n u[n-3]\} &= \mathcal{Z}\{(0.5)^3(0.5)^{n-3} u[n-3]\}\\
             &= (0.5)^3\mathcal{Z}\{(0.5)^{n-3} u[n-3]\}\\
             &=(0.5)^3z^{-3}\mathcal{Z}\{(0.5)^nu[n]\}\\
-            &=\frac{1}{8z^3}\cdot\frac{1}{1-0.5z^{-1}}
+            &=\frac{1}{8z^3}\cdot\frac{1}{1-0.5z^{-1}}\\
+            &=\frac{1}{8}\cdot\frac{1}{z^2(z-0.5)}
         \end{align}
 
         Finalmente, sumando ambas partes tenemos la transformada Z completa:
         \begin{equation}
-            \frac{z\frac{\sqrt{2}}{2}}{z^2-\sqrt{2} z+1} + \frac{1}{8z^3}\cdot\frac{1}{1-0.5z^{-1}}
+            \frac{z\frac{\sqrt{2}}{2}}{z^2-\sqrt{2} z+1} + \frac{1}{8}\cdot\frac{1}{z^2(z-0.5)}
         \end{equation}
         Con RC $|z|>0.5$
-        Para la región de convergencia y polos, consideramos ambas partes. La RC será la intersección de ambas RC.
+        Para la región de convergencia y polos, consideramos ambas partes. La RC final será la intersección de ambas RC.
         Ambas son el exterior de una circunferencia. La RC será el exterior de la circunferencia más grande: $|z|>1$.
 
-        Los polos vienen dados por $z^2-\sqrt{2} z+1=0$ y $1-0.5z^{-1}$. Los polos serían
+        Los polos vienen dados por: 
+        \begin{align}
+            z^2-\sqrt{2} z+1=0 &\Rightarrow p_{1,2}=\frac{\sqrt{2}}{2}\pm\frac{\sqrt{2}}{2}j\\
+            z-0.5 = 0 &\Rightarrow p_3=0.5  \\
+            z^2 &\Rightarrow p_{4,5}= 0
+        \end{align}
+
+        Al bosquejar RC y polos queda:
+
+        \includegraphics[width=10cm]{imagenes/1.3b.png}
 
     \end{solution}
 \end{parts}
 
 \question
 Un sistema cumple:
-\[
+\begin{equation}
     y[n]-0.6y[n-1]=x[n],\quad y[-1]=1
-\]
+\end{equation}
 \begin{parts}
     \part Obtener $H(z)$.
+    \begin{solution}
+        Dado que tenemos una ecuación de diferencias con condición inicial, utilizamos transformada Z unilateral
+        para encontrar función de transferencia y respuesta del sistema. La condición inicial
+        aparece al aplicar la propiedad de desplazamiento en el tiempo.
+
+        \begin{align}
+            &y[n]-0.6y[n-1]=x[n] \\
+            &Y(z)-0.6z^{-1}Y(z)-0.6y[-1]=X(z)\\
+            \Rightarrow &Y(z)=\underbrace{\frac{z}{z-0.6}}_{H(z)}X(z)+\underbrace{\frac{0.6z}{z-0.6}y[-1]}_{\text{Respuesta natural}}\\
+        \end{align}
+    \end{solution}
+
     \part Calcular la respuesta $y[n]$ para entrada escalón usando transformada Z.
+    \begin{solution}
+        Para calcular la respuesta para entrada escalón, sustituimos la entrada por
+        su transformada Z, condición inicial y aplicamos transformada Z.
+        \begin{align}
+            Y(z)&=\frac{z}{z-0.6}\cdot\frac{z}{z-1}+\frac{0.6z}{z-0.6}(1) \\
+                &= z\left[\frac{z}{(z-0.6)(z-1)}\right]+\frac{0.6z}{z-0.6}\\
+                &=z\left[\frac{c_1}{z-0.6}+\frac{c_2}{z-1}\right]+\frac{0.6z}{z-0.6}
+        \end{align}
+        \begin{align}
+            &\boxed{c_1 = \left.\frac{z}{z-1}\right|_{z=0.6}=-1.5}\\
+            &\boxed{c_2 = \left.\frac{z}{z-0.6}\right|_{z=1}=2.5}
+        \end{align}
+        \begin{align}
+            Y(z) &= -0.9\frac{z}{z-0.6} + 2.5 \frac{z}{z-1}\\
+            y[n] &= -0.9(0.6)^nu[n]+2.5u[n], \quad n\geq 0
+        \end{align}
+    \end{solution}
 \end{parts}
 
 \question
@@ -188,8 +230,128 @@ Dada la función de transferencia:
 \begin{parts}
     \part Encontrar respuesta a impulso del sistema.
     \part Analizar causalidad y estabilidad
+    \begin{solution}
+        Tenemos la función de transferencia, y se reconoce que corresponde a un escalon con un a exponencial.
+        Sin embargo no tenemos la RC. La respuesta impulso, causalidad y estabilidad dependerán de la RC.
+
+        \textbf{Caso (i)} RC: $|z|> 0.6$
+        Aplicando transformada inversa:
+        \begin{equation}
+            h(n) = 0.6^nu[n]
+        \end{equation}
+        El sistema es estable (circunferencia unitaria dentro de la RC) y causal.
+
+        \textbf{Caso (ii)} RC: $|z|< 0.6$
+        Aplicando transformada inversa:
+        \begin{equation}
+            h(n) = -0.6^nu[-n-1]
+        \end{equation}
+        El sistema es inestable (circunferencia unitaria fuera de la RC) y anticausal.
+    \end{solution}
+    
     \part ¿Que ocurriría si el polo estuviera en $z=1.2$?
+    \begin{solution}
+        Suponemos nueva F. de T.:
+        \begin{equation}
+           H(z) =\frac{z}{z-1.2}
+        \end{equation}
+        \textbf{Caso (iii)} RC: $|z|> 1.2$
+        Aplicando transformada inversa:
+        \begin{equation}
+            h(n) = 1.2^nu[n]
+        \end{equation}
+        El sistema es inestable (circunferencia unitaria fuera de la RC) y causal.
+
+        \textbf{Caso (iv)} RC: $|z|< 1.2$
+        Aplicando transformada inversa:
+        \begin{equation}
+            h(n) = -1.2^nu[-n-1]
+        \end{equation}
+        El sistema es estable (circunferencia unitaria dentro de la RC) y anticausal.
+
+        \textbf{Observación:} Al mover el polo hacia 1.2, la estabilidad cambia, no así la causalidad.
+    \end{solution}
 \end{parts}
+
+\question
+Se tiene un sistema tiempo invariante descrito por las siguientes relaciones:
+\begin{align}
+    T[k+1] &= a_0T[k]+x[k]^2 \nonumber \\ 
+    T_m[k] &=T[k-d]     \nonumber
+\end{align}
+Donde $x[k]$ es la entrada, y $T_m[k]$ es la salida.
+\begin{parts}
+    \part ¿Es este un sistema lineal? Si no es así, obtenga un modelo linealizado para una entrada constante 1.
+    \begin{solution}
+        El sistema no es lineal, debido al término $x[k]^2$.
+        Con entrada constante $x_e=1$ y asumiendo estado estacionario, tenemos:
+        \begin{equation}
+            T[k+1]=T[k]=T_e
+        \end{equation}
+        Luego:
+        \begin{align}
+            T[k+1] &= a_0T[k]+x[k]^2 \\
+            T_e &= a_0T_e+x_e^2\\
+            T_e &= a_0T_e+1\\
+            \Rightarrow T_e&=\frac{1}{1-a_0}
+        \end{align}
+        $T_m$ es simplemente $T$ tras un retardo, su valor en estado estacionario es el mismo.
+        \begin{equation}
+            T_{me}=\frac{1}{1-a_0}
+        \end{equation}
+        La variables utilizando el punto de operación quedan decritas como:
+        \begin{align}
+            x[k] &= x_e + \Delta x[k]\\
+            T[k] &= T_e + \Delta T[k]\\
+            T_m[k] &= T_{me} + \Delta T_m[k]
+        \end{align}
+
+        Con (la primera ecuación se linealiza, la segunda ecuación se toma tal cual pues ya es lineal):
+        \begin{align}
+            \Delta T[k+1] = c_1\Delta T[k] + c_2\Delta x[k]\\
+            \Delta T_m[k] = \Delta T[k-d] 
+        \end{align}
+        Buscamos los coeficientes $c_1$ y $c_2$. Consideramos la función a partir de la primera
+        ecuación de estado:
+        \begin{align}
+            f(T,x) &= a_0T+x^2\\
+            c_1 &= \left.\frac{\partial}{\partial T}f(T,x)\right|_{(T_e,x_e)}=a_0\\
+            c_2 &= \left.\frac{\partial}{\partial x}f(T,x)\right|_{(T_e,x_e)}=2x_e =2
+        \end{align}
+        Por lo que:
+        \begin{align}
+            \Delta T[k+1] = a_0\Delta T[k] + 2\Delta x[k]\\
+            \Delta T_m[k] = \Delta T[k-d] 
+        \end{align}
+    \end{solution}
+
+    \part Encuentre la función de transferencia del sistema.
+    \begin{solution}
+        La F. de T. del sistema linealizado se puede expresar como:
+        \begin{equation}
+            H(z) = \frac{\Delta T_m(z)}{\Delta x(z)} = \frac{\Delta T_m(z)}{\Delta T(z)}\cdot \frac{\Delta T(z)}{\Delta X(z)}
+        \end{equation}
+        Luego utilizamos transformada Z en el sistema linealizado para encontrar las expresiones que buscamos:
+        \begin{align}
+            \Delta T[k+1] &= a_0\Delta T[k] + 2\Delta x[k]\\
+            z\Delta T(z) &= a_0\Delta T(z) + 2\Delta X(z)\\
+            \Rightarrow \frac{\Delta T(z)}{\Delta X(z)} &= \frac{2}{z-a_0}
+        \end{align}
+            
+        \begin{align}
+            \Delta T_m[k] &= \Delta T[k-d]\\
+            \Delta T_m(z) &= z^{-d}\Delta T(z)\\
+            \Rightarrow\frac{\Delta T_m(z)}{\Delta T(z)}&=z^{-d}
+        \end{align}
+
+        Finalmente:
+        \begin{equation}
+            H(z) = \frac{2}{z-a_0}\cdot z^{-d}=\frac{2}{z^d(z-a_0)}
+        \end{equation}
+    \end{solution}
+    \part Encuentre la salida ante una entrada $1+u[k]$ y $d=2$.
+\end{parts}
+
 \end{questions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
