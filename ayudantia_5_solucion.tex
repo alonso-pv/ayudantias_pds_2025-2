@@ -1,0 +1,117 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 5 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+
+\question
+Una señal $x_c(t)$ tiene el espectro de magnitud $X_c(j\Omega)$ que se muestra
+en la figura:
+
+\includegraphics[width=15cm]{imagenes/5.2.png}
+
+La señal se muestrea con un periodo de muestreo $T=1/8$ segundos.
+
+\begin{parts}
+    \part Encuentre la frecuencia de Nyquist $\Omega_H$.
+    \begin{solution}
+        La frecuencia de Nyquist corresponde a la máxima frecuencia presente
+        en la señal. Por inspección: $\Omega_H=10\pi=5\cdot 2\pi$ (en Hz: $F_H=5$ Hz).
+    \end{solution}
+
+    \part ¿Se cumple el teorema de muestreo?
+    \begin{solution}
+        El teorema de muestreo (o teorema de Nyquist) dice que si $F_s\geq 2F_H$
+        entonces la señal se puede recuperar completamente.
+        
+        Con $T=1/8$, $F_s=1/T=8$ Hz, y $F_H=5$ Hz, la desigualdad $F_s\geq2F_H$
+        no se cumple y no se cumple el teorema de muestreo.
+    \end{solution}
+
+    \part Dibuje el espectro $X(e^{j\Omega T})$ de la señal muestreada $x[n]$ en
+    el rango $-30\pi\leq\Omega\leq30\pi$.
+    \begin{solution}
+        El espectro corresponde a la sumatoria de copias desplazadas en $2\pi/T=2\pi F_s=16\pi$
+        del espectro original.
+\begin{align}
+    X(e^{j\Omega T})&=\sum_{k=-\infty}^{\infty}X\left(j\Omega-j\frac{2\pi}{T}k\right)\\
+    &=\sum_{k=-\infty}^{\infty}X\left(j\Omega-j16\pi k\right)
+\end{align}
+
+        \par\includegraphics[width=14cm]{imagenes/5.1.b.png}
+    \end{solution}
+\end{parts}
+
+\question Se tiene una señal continua $x_c(t)=2\cos(150\pi t)$.
+
+\begin{parts}
+    \part Escoja una frecuencia de muestreo adecuada para la señal.
+    \begin{solution}
+        La frecuencia de Nyquist (máxima frecuencia) es $150\pi=75\cdot2\pi$ (es decir 75 Hz).
+        Al escoger una frecuencia de muestreo, utilizamos como criterio el teorema
+        de muestreo (o de Nyquist): $F_s\geq2F_H$.
+
+        Por lo tanto:
+        \begin{align}
+            F_s&\geq2F_H=2\cdot 75\\
+            &\geq150\text{ Hz}
+        \end{align}
+
+        Escogiendo una tasa de muestreo sobre $150$ Hz, seremos capaces de recuperar
+        la señal sin aliasing. Podemos escoger por ejemplo, $F_s=300$ Hz.
+
+        
+    \end{solution}
+
+    \part La señal se muestrea, y posteriormente se reconstruye utilizando un 
+    retentor de orden cero y un filtro ideal que bloquea frecuencias por encima
+    de la frecuencia de Nyquist. Bosqueje la señal en cada paso y determine la señal reconstruida.
+\end{parts}
+
+\question
+Considere la siguiente señal tiempo continuo:
+$$
+x_c(t) = 5\cos\left(200\pi t + \frac{\pi}{6}\right) + 4\sin\left(400\pi t\right)
+$$
+\begin{parts}
+    \part Determine las frecuencias (en Hz) presentes en la señal.
+    \begin{solution}
+        
+    \end{solution}
+    
+    \part Determine la frecuencia de Nyquist, y tasa de muestreo para un muestreo
+    sin aliasing.
+
+    \part La señal se muestrea con $F_s=500$ Hz (ADC ideal). Determine el espectro $X(e^{j\Omega T})$
+    de la señal muestreada $x[n]$ y grafique su magnitud como función de la frecuencia $F$ en Hz.
+
+    \part Determine la señal $x_r(t)$ reconstruida utilizando un DAC ideal.
+
+    \part Repita (c) y (d), muestreando la señal con $F_s=350$ Hz.
+\end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

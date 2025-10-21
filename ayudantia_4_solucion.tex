@@ -1,0 +1,318 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 4 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+% Pregunta identificar filtros
+
+% Diseñar un filtro simple IIR
+%a) diseñar para cierta característica
+%b) bosquejar fase y magnitud
+%c) Encontrar respuesta para cierta señal periodica
+%d) Encontrar ecuación de diferencias
+
+% Diseñar un pasabanda simple.
+%a) diseñar con ciertos requerimientos.
+
+\begin{questions}
+
+\question
+Considere el sistema LTI causal descrito por $y[n]=0.8y[n-1]+0.2x[n]$.
+\begin{parts}
+    \part Determine $H(z)$ y $H(e^{j\omega})$
+    \begin{solution}
+        \begin{align}
+            y[n]&=0.8y[n-1]+0.2x[n] \\
+            &\Big\downarrow \mathcal{Z}\nonumber\\
+            Y(z)&=0.8z^{-1}Y(z)+0.2X(z)\\
+            \Rightarrow H(z)&=\frac{0.2}{1-0.8z^{-1}}\\
+            &\Big\downarrow z=e^{j\omega}\nonumber\\
+            H(e^{j\omega})&=\frac{0.2}{1-0.8e^{-j\omega}}=\frac{0.2}{1-0.8\cos\omega+j0.8\sin\omega}
+        \end{align}
+    \end{solution}
+
+    \part Obtenga $|H(e^{j\omega})|$ y $\angle H(e^{j\omega})$
+    \begin{solution}
+        \begin{align}
+            |H(e^{j\omega})| &= \frac{0.2}{|1-0.8\cos\omega+j0.8\sin\omega|}\\
+            &= \frac{0.2}{\sqrt{(1-0.8\cos\omega)^2+(0.8\sin\omega)^2}}\\
+            &= \frac{0.2}{\sqrt{1.64-1.6\cos\omega}}
+        \end{align}
+
+        \begin{align}
+            \angle H(e^{j\omega})&=-\angle(1-0.8\cos\omega+j0.8\sin\omega)\\
+            &=-\arctan\left(\frac{0.8\sin\omega}{1-0.8\cos\omega}\right)
+        \end{align}
+    \end{solution}
+
+    \part Halle la ganancia DC y en $\omega=\pi$. Identificar el tipo de filtro
+    y hallar la frecuencia de corte.
+    \begin{solution}
+        Para la ganancia DC, ocupamos la TFTD evaluada en $\omega = 0$:
+        \begin{align}
+            G_{DC}=H(e^{j(0)})&=\frac{0.2}{1-0.8}\\
+            &=\frac{0.2}{0.2}=1
+        \end{align}
+
+        La magnitud en $\omega=\pi$:
+        \begin{align}
+            |H(e^{j(\pi)})|&=\frac{0.2}{\sqrt{1.64-1.6\cos\pi}}\\
+            &=\frac{0.2}{\sqrt{3.24}}=\frac{0.2}{1.8}\\
+            &=1/9
+        \end{align}
+
+        Para encontrar la frecuencia de corte $\omega_c$, consideramos la ecuación:
+        \begin{align}
+            |H(e^{j\omega_c})|=\frac{0.2}{\sqrt{1.64-1.6\cos\omega_c}}&=\frac{1}{\sqrt{2}}=-3_{\text{dB}}\\
+            \frac{1}{\sqrt{1.64-1.6\cos\omega_c}}&=\frac{1}{\sqrt{0.08}}\\
+            1.64-1.6\cos\omega_c&=0.08\\
+            \omega_c&=\cos^{-1}\frac{1.56}{1.6}\\
+            &=0.2241
+        \end{align}
+    \end{solution}
+
+    \part Bosqueje la magnitud.
+    \begin{solution}
+        La magnitud para sistemas con respuesta a impulso reales es par. El bosquejo es simétrico.
+        Se realiza el bosquejo entre $-\pi$ y $\pi$, pues la magnitud es periódica.
+    
+        \includegraphics[width=10cm]{imagenes/4.1d.png}
+    \end{solution}
+    \part Encuentre el retardo de fase y el retardo de grupo. ¿Que se puede concluir?
+    \begin{solution}
+        El retardo de fase es por definición:
+        \begin{equation}
+            \tau_{\text{pd}}(\omega)=-\frac{\angle H(e^{j\omega})}{\omega}=\frac{1}{\omega}\arctan\left(\frac{0.8\sin\omega}{1-0.8\cos\omega}\right)
+        \end{equation}
+        Para la respuesta continua de fase consideramos $\Psi(\omega)=\angle H(e^{j\omega})$
+        pues la fase $\angle H(e^{j\omega})$ es en este caso continua. Por lo tanto,
+        el retardo de grupo es por definición:
+        \begin{align}
+            \tau_{\text{gd}}(\omega)=-\frac{d\Psi(\omega)}{d\omega}&=\frac{d}{d\omega}\arctan\left(\frac{0.8\sin\omega}{1-0.8\cos\omega}\right)\\
+            &=\frac{0.8\cos\omega-0.64}{1.64-1.6\cos\omega}
+        \end{align}
+        Es evidente que ni el retardo de fase $\tau_{\text{pd}}$ ni el retardo de grupo $\tau_{\text{gd}}$
+        son constantes. Como no son constantes, se concluye que el filtro distorsiona
+        la señal de entrada.
+    \end{solution}
+
+    \part Considere la entrada $x[n]=3+5\cos(\frac{\pi}{4}n)$. Determine la salida
+    $y[n]$.
+    \begin{solution}
+        Para la salida, aplicamos la propiedad de sistemas LTI para señales periódicas.
+        Para la constante utilizamos la ganancia DC ($G_{\text{DC}}=1$), y para el coseno ($\omega=\pi/4$)
+        consideramos:
+        \begin{align}
+            |H(e^{j\pi/4})|&=\frac{0.2}{\sqrt{1.64-1.6\cos(\pi/4)}}&  \angle H(e^{j\pi/4})&=-\arctan\left(\frac{0.8\sin(\pi/4)}{1-0.8\cos(\pi/4)}\right)  \\
+            &=0.2804&    &=-0.9160
+        \end{align}
+        Utilizando estos valores, se deduce la salida del sistema:
+        \begin{align}
+            x[n]&=3+5\cos\left(\frac{\pi}{4}n\right)\\
+            &\Big\downarrow\mathcal{H}\nonumber\\
+            y[n]&=3G_{\text{DC}} + 5|H(e^{j\omega})|\cos\left(\frac{\pi}{4}n+\angle H(e^{j\omega})\right)\\
+            &=3(1) + 5(0.2804)\cos\left(\frac{\pi}{4}n-0.9160\right)\\
+            &=3+1.402\cos\left(\frac{\pi}{4}n-0.9160\right)
+        \end{align}
+    \end{solution}
+
+\end{parts}
+
+\question Un filtro se define por la siguiente ecuación:
+$$
+    y[n] = \frac{1}{5}\sum_{k=0}^{4}x[n-k]
+$$
+
+\begin{parts}
+    \part Encuentre la respuesta a impulso $h[n]$ e identifique el tipo de filtro.
+    \begin{solution}
+        Puesto que ya tenemos una expresión explícita para la salida, podemos encontrar
+        la respuesta a impulso reemplazando $x[n]=\delta[n]$.
+        \begin{align}
+            y[n] &= \frac{1}{5}\sum_{k=0}^{4}x[n-k]\\
+            &\Big\downarrow x[n]=\delta[n]\nonumber\\
+            h[n] &= \frac{1}{5}\sum_{k=0}^{4}\delta [n-k]\\
+            &=\frac{1}{5}(\delta[n]+\delta[n-1]+ \dots +\delta[n-4])\\
+            &=\frac{1}{5}(u[n]-u[n-5])
+        \end{align}
+    \end{solution}
+
+    \part Demuestre que la respuesta en frecuencia se puede escribir como:
+    $H(e^{j\omega}) = \frac{1}{5}\frac{\sin (5\omega/2)}{\sin(\omega/2)}e^{-j2\omega}$
+    \begin{solution}
+        Aplicando transformada Z sobre la respuesta a impulso, y evaluando en $e^{j\omega}$
+        se obtiene la respuesta en frecuencia. 
+        
+        Recordar que: $\mathcal{Z}\{\delta[n]\}=1$,
+         $\sum_{k=0}^{N}a^k=\frac{1-a^{N+1}}{1-a}$,
+         $2j\sin\omega=e^{j\omega}-e^{-j\omega}$
+        \begin{align}
+            h[n] &= \frac{1}{5}\sum_{k=0}^{4}\delta [n-k]\\
+            &\Big\downarrow \mathcal{Z}\nonumber\\
+            H(z) &= \frac{1}{5}\sum_{k=0}^{4}z^{-k}\\
+            &=\frac{1}{5}\cdot\frac{1-z^{-5}}{1-z^{-1}}\\
+            &\Big\downarrow z=e^{j\omega}\nonumber\\
+            H(e^{j\omega})&=\frac{1}{5}\cdot\frac{1-e^{-j5\omega}}{1-e^{-j\omega}}\\
+            &=\frac{1}{5}\cdot\frac{(1-e^{-j5\omega})e^{j5\omega/2}}{(1-e^{-j\omega})e^{j\omega/2}}\cdot\frac{e^{-j5\omega/2}}{e^{-j\omega/2}}\\
+            &=\frac{1}{5}\cdot\frac{e^{j5\omega/2}-e^{-j5\omega/2}}{e^{j\omega/2}-e^{-j\omega/2}}\cdot e^{-2j\omega}\\
+            &=\frac{1}{5}\cdot\frac{\sin (5\omega/2)}{\sin(\omega/2)}\cdot e^{-2j\omega}
+        \end{align}
+    \end{solution}
+
+    \part Encuentre el retardo de grupo del sistema.
+    \begin{solution}
+        Para el retardo de grupo necesitamos la respuesta continua de fase $\Psi(\omega)$.
+        Esta se puede encontrar obteniendo la fase y descartando discontinuidades,
+        o bien mediante inspección, si la respuesta en frecuencia se escribe en
+        coordenadas polares:
+        \begin{gather}
+            H(e^{j\omega})=G(\omega)e^{j\Psi(\omega)}=\left(\frac{1}{5}\cdot\frac{\sin (5\omega/2)}{\sin(\omega/2)}\right)\cdot e^{j(-2\omega)}\\
+            \Psi(\omega)=-2\omega\\
+            \tau_{\text{gd}}(\omega)=-\frac{d\Psi(\omega)}{d\omega}=2
+        \end{gather}
+        El retardo de grupo es constante. Este sistema no distorsiona señal.
+    \end{solution}
+
+    \part Encuentre los ceros de $H(z)$ y ubíquelos en el plano Z.
+    \begin{solution}
+        Con:
+        $$
+        H(z)=\frac{1}{5}\cdot\frac{1-z^{-5}}{1-z^{-1}}
+        $$
+        Los ceros vienen dados por:
+        \begin{align}
+            1-z^{-5}&=0\\
+            z^5&=1\\
+            z&=e^{j 2\pi k/5},\quad k=0,1,2,3, 4
+        \end{align}
+        Al analizar los polos, tenemos:
+        \begin{align}
+            1-z^{-1}&=0\\
+            z&=1
+        \end{align}
+        Este cero se cancela con el polo $z=e^{j2\pi(0)/5}=1$. Por lo tanto, los
+        ceros de la función de transferencia son:
+        \begin{equation}
+            z=e^{j 2\pi k/5},\quad k=1,2,3, 4
+        \end{equation}
+        \includegraphics[width=10cm]{imagenes/4.2d.png}
+
+    \end{solution}
+
+    \part Determine la salida $y[n]$ ante entrada $x[n]=(-1)^n+3\sin(\pi n/2)$
+    \begin{solution}
+        La señal es periódica por lo que podemos aplicar la
+        propiedad de funciones propias para sistemas LTI. Para encontrar la respuesta sin embargo,
+        conviene escribirla en términos de senos y cosenos:
+        \begin{align}
+            x[n]&=(-1)^n+3\sin(\pi n/2)\\
+            &=\cos(\pi n)+3\sin(\pi n/2)
+        \end{align}
+        Debemos calcular magnitud y fase para $\omega=\pi,\,\pi/2$. Primero obtenemos
+        la magnitud y fase del sistema:
+        \begin{align}
+            |H(e^{j\omega})|&=\left|\frac{1}{5}\cdot\frac{\sin(5\omega/2)}{\sin(\omega/2)}\cdot e^{-2j\omega}\right|& \angle H(e^{j\omega})&=\angle\left(\frac{1}{5}\cdot\frac{\sin(5\omega/2)}{\sin(\omega/2)}\cdot e^{-2j\omega}\right)\\
+            &=\frac{1}{5}\left|\frac{\sin(5\omega/2)}{\sin(\omega/2)}\right|& &=\angle\left(\frac{\sin(5\omega/2)}{\sin(\omega/2)}\right)-2\omega
+        \end{align}
+        Evaluamos en los valores ya mencionados:
+        \begin{align}
+            &(\omega=\pi):&   &|H(e^{j\pi})|=\frac{1}{5} &\angle H(e^{j\pi})=0-2\pi=-2\pi\\
+            &(\omega=\pi/2):& &|H(e^{j\pi/2})|=\frac{1}{5} &\angle H(e^{j\pi/2})=\pi-2\frac{\pi}{2}=0
+        \end{align}
+        Utilizando los valores calculados, se obtiene la respuesta del sistema:
+        \begin{align}
+            x[n]&=\cos(\pi n)+3\sin(\pi n/2)\\
+            &\Big\downarrow\mathcal{H}\nonumber\\
+            y[n]&=|H(e^{j\pi})|\cos\left[\pi n + \angle H(e^{j\pi})\right]
+                + 3|H(e^{j\pi/2})|\sin\left[\pi n/2 + \angle H(e^{j\pi/2})\right]\\
+            &=\frac{1}{5}\cos(\pi n -2\pi) + \frac{3}{5}\sin(\pi n/2+0)\\
+            &=\frac{1}{5}\cos(\pi n) + \frac{3}{5}\sin(\pi n/2)
+        \end{align}
+    \end{solution}
+\end{parts}
+
+\question
+Considere el filtro pasabajo $h_{lp}[n]=(0.9)^nu[n]$
+
+\begin{parts}
+\part Encuentre la respuesta en frecuencia $H_{lp}(e^{j\omega})$
+\begin{solution}
+    \begin{align}
+        h_{lp}[n]&=(0.9)^nu[n]\\
+        &\Big\downarrow\mathcal{Z}\nonumber\\
+        H_{lp}(z)&=\frac{1}{1-0.9z^{-1}}\\
+        &\Big\downarrow z=e^{j\omega}\nonumber\\
+        H_{lp}(e^{j\omega})&=\frac{1}{1-0.9e^{j\omega}}
+    \end{align}
+\end{solution}
+
+\part Diseñe un filtro pasabanda $H_{bp}(e^{j\omega})$ cuya magnitud sea máxima para las frecuencias
+$\omega\approx\pm \pi/3$
+\begin{solution}
+    El filtro pasabajo de (a) tiene máxima magnitud para $\omega=0$. Si consideramos el
+    filtro pasabajo con desplazamiento en la frecuencia $H(e^{j(\omega-\omega_c)})$,
+    este es máximo en magnitud para $\omega=\omega_c$.
+    
+    Utilizando dos pasabajos desplazados por $\omega_c=\pm\pi/3$, deberíamos
+    obtener un filtro que tenga dos picos de magnitud para las frecuencias deseadas:
+    \begin{align}
+        H_{bp}(e^{j\omega})&=H_{lp}(e^{j(\omega-\omega_c)})+H_{lp}(e^{j(\omega+\omega_c)})\\
+        &=\frac{1}{1-0.9e^{j(\omega-\omega_c)}} + \frac{1}{1-0.9e^{j(\omega+\omega_c)}}
+    \end{align}
+\end{solution}
+
+\part Bosqueje la magnitud. Compruebe y determine $|H(e^{j\omega})|_\text{max}$
+y la frecuencia correspondiente en Matlab.
+\begin{solution}
+    La magnitud es $10.5421$, para $\omega=1.0498$.
+
+    \includegraphics[width=14cm]{imagenes/4.3c.png}
+    \begin{minted}{matlab}
+%% 3 (c)
+Hlp_ej = @(w) 1./(1-0.9.*exp(-1j.*w));
+
+Hbp_ej = @(w) Hlp_ej(w-pi/3) + Hlp_ej(w+pi/3);
+mag = @(w) abs(Hbp_ej(w));
+
+w_max = fminbnd(@(w) -mag(w), 0, pi)
+mag_max = mag(w_max)
+
+w = linspace(-pi,pi,1000);
+figure;
+plot(w, mag(w),'LineWidth',2); hold on
+plot(w_max, mag(w_max),'o','LineWidth',2)
+plot(-w_max, mag(-w_max),'o','LineWidth',2)
+xline([-pi/3 pi/3])
+xlabel('Frequencia (rad/s)');
+ylabel('Magnitud');
+title('Magnitud de Hbp');
+grid on;
+    \end{minted}
+\end{solution}
+
+\end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

@@ -1,0 +1,261 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+\DeclareMathOperator{\atantwo}{atan2}
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 2 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question
+Sea $x(t) = 2 + 4\sin(3\pi t) + 6\cos(8\pi t + \pi/3)$:
+\begin{parts}
+    \part Determine la frecuencia fundamental $\Omega_0$ de $x(t)$
+    \begin{solution}
+        Para encontrar la frecuencia fundamental $\Omega_0$ (rad/s), basta con mirar las frecuencias
+        presentes en nuestra señal original, y hallar el "máximo común divisor".
+        \begin{equation}
+            2 + \underbrace{4\sin(3\pi t)}_{3\pi} + \underbrace{6\cos(8\pi t + \pi/3)}_{8\pi}
+        \end{equation}
+        Como $mcd(3\pi,8\pi)=\pi$, la frecuencia fundmental sería $\Omega_0=\pi$.
+    \end{solution}
+
+    \part Determine los coeficientes $c_k$ de la serie de Fourier. Bosquejar magnitud y fase como función de $k\Omega_0$.
+    \begin{solution}
+        Como la señal periódica está compuesta por sinusoidales de frecuencia múltiplo de la frecuencia fundamental,
+        se hallan los coeficientes por inspección. Recordemos que:
+        \begin{align}
+            \sum_{k=-\infty}^{\infty}c_ke^{jk\Omega_0t}&=x(t) \\
+            \sum_{k=-\infty}^{\infty}c_ke^{jk\pi t}&= 2 + 4\sin(3\pi t) + 6\cos(8\pi t + \pi/3)\\
+            &=2 + \frac{4}{2j}\left[e^{j3\pi t} - e^{-j3\pi t}\right] + \frac{6}{2}\left[e^{j8\pi t + j\pi/3} + e^{-j\pi t - j\pi/3}\right]\\
+            &=\underbrace{2}_{c_0}e^{j(0)\pi t} \underbrace{-2j}_{c_3}\cdot e^{j(3)\pi t} +\underbrace{2j}_{c_{-3}}\cdot e^{j(-3)\pi t} + \underbrace{3e^{j\pi/3}}_{c_8}\cdot e^{j(8)\pi t} + \underbrace{3e^{-j\pi/3}}_{c_{-8}}\cdot e^{j(-8)\pi t} 
+        \end{align}
+        Por lo tanto tenemos: $c_{-8} = 3e^{-j\pi/3}$, $c_{-3}=2j$, $c_0=2$, $c_{3}=-2j$, $c_8=3e^{j\pi/3}$ y $c_k=0$ para cualquier otro $k$.
+        
+        \includegraphics[width=14cm]{imagenes/1.1d.png}
+    \end{solution}
+    \end{parts}
+
+\question
+Considere la señal aperiódica $x(t)$ y la señal periódica $\tilde{x}(t)$ definidas por:
+$$
+    x(t) = \begin{cases}
+        e^{-t}, & -1<t<1\\
+        0, & \text{en otro caso}
+    \end{cases}
+    \quad\text{y}\quad
+    \tilde{x}(t) = \sum_{k=-\infty}^{\infty}x(t-2k)
+$$
+\begin{parts}
+\part Obtenga la transformada de Laplace de $x(t)$.
+\begin{solution}
+    \begin{align}
+        \mathcal{L}\{x(t)\}=X(s)&=\int_{-\infty}^{\infty}x(t)e^{-st}dt\\
+        &=\int_{-1}^{1}e^{-t}e^{-st}dt\\
+        &=\frac{e^{s+1}}{s+1}-\frac{e^{-(s+1)}}{s+1}
+    \end{align}
+\end{solution}
+
+\part Calcule la transformada de Fourier $X(j\Omega)$ de $x(t)$.
+\begin{solution}
+    \begin{align}
+        X(j\Omega)&=\left.X(s)\right|_{s=j\Omega}\\
+        &=\frac{e^{j\Omega+1}}{j\Omega+1}-\frac{e^{-(j\Omega+1)}}{j\Omega+1}
+    \end{align}    
+\end{solution}
+
+\part Calcule los coeficientes $c_k$ de la serie de Fourier de $\tilde{x}(t)$. Verifique la relación {$c_k =\left.\frac{1}{T_0}X(j\Omega)\right|_{\Omega=k\Omega_0}$}.
+\begin{solution}
+    Los coeficientes se calculan por medio de la expresión:
+    \begin{align}
+        c_k=\frac{1}{T_0}\int_{T_0}\tilde{x}(t)e^{-jk\Omega_0 t}dt
+    \end{align}
+    En nuestro caso, la señal $\tilde{x}(t)$ se forma tomando la señal $x(t)$ como periodo base, desplazándola sucesivamente en 2 unidades.
+    El periodo viene dado por $T_0=2$. En cuanto a la frecuencia angular: $\Omega_0=2\pi F_0=2\pi/T_0=\pi$.
+    Sustituyendo en la expresión, y escogiendo como intervalo de integración [-1,1]:
+    \begin{align}
+        c_k &=\frac{1}{2}\int_{-1}^{1}e^{-t}e^{-jk\pi t}dt\\
+            &=\frac{1}{2}\left[\frac{e^{jk\pi+1}}{jk\pi+1}-\frac{e^{-(jk\pi+1)}}{jk\pi+1}\right]
+    \end{align}
+    Finalmente verificamos que al evaluar la expresión $\left.\frac{1}{T_0}X(j\Omega)\right|_{\Omega=k\Omega_0}$ obtenemos:
+    \begin{align}
+        \left.\frac{1}{T_0}X(j\Omega)\right|_{\Omega=k\Omega_0}&=\frac{1}{2}\left[\frac{e^{j\Omega+1}}{j\Omega+1}-\frac{e^{-(j\Omega+1)}}{j\Omega+1}\right]_{\Omega=k\pi}\\
+        &=\frac{1}{2}\left[\frac{e^{jk\pi+1}}{jk\pi+1}-\frac{e^{-(jk\pi+1)}}{jk\pi+1}\right]=c_k
+    \end{align}
+\end{solution}
+
+\part Grafique magnitud y fase de ambas en Matlab.
+\end{parts}
+\begin{solution}
+    \par\includegraphics[width=14cm]{imagenes/2.2d.png}
+    \begin{minted}{matlab}
+%% 2 d)
+X = @(om) ( exp(1j*om+1) - exp(-1j*om-1) )./(1j*om+1);
+c = @(k) ( exp(1j*k*pi + 1) - exp(-1j*k*pi - 1) )./(2j*k*pi+2);
+
+om_0 = pi;
+
+k = -10:1:10;
+om = linspace(-10*om_0, 10*om_0, 1000);
+
+% Magnitud
+figure
+subplot(2,1,1)
+stem(k*om_0, abs(c(k)), 'o', 'color', 'k');
+hold on;
+%plot(om, abs(X(om)), '-');
+plot(om, abs(X(om)/2), '-');
+title('Gráfico de magnitud');
+xlabel('Frequencia (rad/s)');
+ylabel('Magnitud');
+grid on; hold on;
+
+% Fase
+subplot(2,1,2)
+stem(k*om_0, angle(c(k)), 'o', 'color', 'k');
+hold on;
+%plot(om, angle(X(om)), '-')
+plot(om, angle(X(om)/2), '-')
+title('Gráfico de fase');
+xlabel('Frequencia (rad/s)');
+ylabel('Fase (rad)');
+    \end{minted}
+\end{solution}
+\question
+Determine el espectro de magnitud y fase de la TFTD de las siguientes señales:
+\begin{parts}
+    \part $x_1[n]=(1/3)^nu[n-1]$
+    \begin{solution}
+    Se calcula la TFTD a partir de la transformada Z.
+    \begin{align}
+        x_1[n]&=\left(\frac{1}{3}\right)^nu[n-1]\\
+        &=\frac{1}{3}\left(\frac{1}{3}\right)^{n-1}u[n-1]\\
+        &\Big\downarrow\mathcal{Z}\{\;\}\\
+        X_1(z)&=\frac{1}{3}z^{-1}\frac{z}{z-1/3}\\
+        &=\frac{1}{3}\cdot\frac{1}{z-1/3}\\
+        &\Big\downarrow z=e^{j\omega}\\
+        X_1(e^{j\omega})&= \frac{1}{3}\cdot\frac{1}{e^{j\omega}-1/3}
+    \end{align}
+    La magnitud viene dada por:
+    \begin{align}
+        \left|X_1(e^{j\omega})\right|&=  \left|\frac{1}{3}\cdot\frac{1}{e^{j\omega}-1/3}\right|\\
+        &= \frac{1}{3}\left|\frac{1}{e^{j\omega}-1/3}\right|\\
+        &= \frac{1}{3}\frac{1}{|\cos \omega + j\sin \omega - 1/3|}\\
+        &= \frac{1}{3\sqrt{(\cos \omega - 1/3)^2+ \sin^2\omega}}\\
+        &= \frac{1}{3\sqrt{\cos^2 \omega - 2/3\cos\omega+1/9+\sin^2\omega}}\\
+        &= \frac{1}{3\sqrt{10/9 - 2/3\cos\omega}}\\
+        &= \frac{1}{\sqrt{10-6\cos\omega}}
+    \end{align}
+
+    En cuanto a la fase:
+    \begin{align}
+        \angle X_1(e^{j\omega}) &=\angle\left(\frac{1}{3}\cdot\frac{1}{e^{j\omega}-1/3}\right)\\
+        &= \angle\left(\frac{1}{e^{j\omega}-1/3}\right)\\
+        &= -\angle(e^{j\omega}-1/3)\\
+        &= -\angle(\cos\omega + j\sin\omega - 1/3)\\
+        &= -\atantwo(\sin\omega,\;\cos\omega-1/3)
+    \end{align}
+\end{solution}
+
+    \part $x_2[n]=\sin(0.1\pi n)(u[n]-u[n-10])$
+    \begin{solution}
+        Calculamos la TFTD del mismo modo:
+        \begin{align}
+            x_2[n] &= \sin(0.1\pi n)(u[n]-u[n-10]) \\
+            &=\sin(0.1\pi n)u[n] - \sin(0.1\pi n)u[n-10]\\
+            &=\sin(0.1\pi n)u[n] - \sin(0.1\pi [n-10]+\pi)u[n-10]\\
+            &\qquad\boxed{-\sin(x+\pi)=\sin(x)}\\
+            &=\sin(0.1\pi n)u[n] + \sin(0.1\pi [n-10])u[n-10]\\
+        &\Big\downarrow\mathcal{Z}\{\;\}\\
+        X_2(z)&=\frac{z\sin 0.1\pi}{z^2-2z\cos 0.1\pi+1}(1+z^{-10})\\
+        &\Big\downarrow z=e^{j\omega}\\
+        X_2(e^{j\omega})&=\frac{e^{j\omega}\sin 0.1\pi}{e^{j2\omega}-2e^{j\omega}\cos 0.1\pi+1}(1+e^{-j10\omega})
+        \end{align}
+        Aquí un desarrollo analítico de magnitud y fase es más complicado que para el caso anterior. Involucra factorizar la función de transferencia,
+        utilizar propiedades trigonométricas, y propiedades de módulo y ángulo para números complejos.
+
+        \includegraphics[width=14cm]{imagenes/2.3b.png}
+    \end{solution}
+\end{parts}
+
+\question
+Determine los coeficientes de Fourier de las siguientes señales periódicas:
+\begin{parts}
+\part $x_1[n]= \cos(2\pi[3/10]n)$
+\begin{solution}
+    Primero determinamos el periodo de la señal periódica. Recordando que $\cos$ es $2\pi$-periódica, notamos que
+    el menor $n\neq 0$ a partir del cual la señal se comienza a repetir es $N=10$.
+    
+    Encontramos los coeficientes por inspección. Recordemos que ---en general--- una señal se reconstruye a partir de los coeficientes
+    mediante la expresión:
+    \begin{equation}
+        \sum_{k=0}^{N-1}c_k e^{j\frac{2\pi}{N}kn}=x[n]
+    \end{equation}
+    Sustituyendo el periodo y nuestra señal, desarrollando se hallan los coeficientes:
+    \begin{align}
+        \sum_{k=0}^{9}c_k e^{j\frac{2\pi}{10}kn}&=\cos(2\pi[3/10]n)\\
+        &=\frac{e^{j\frac{2\pi}{10}3n}+e^{-j\frac{2\pi}{10}3n}}{2}\\
+        &=\underbrace{\frac{1}{2}}_{c_3}e^{j\frac{2\pi}{10}(3)n} + \underbrace{\frac{1}{2}}_{c_{-3}?}e^{j\frac{2\pi}{10}(-3)n}
+    \end{align}
+    Aquí ya podemos obtener un coeficiente. El otro parece ser $c_{-3}$, sin embargo $0\leq k \leq 9$. Aquí debemos
+    considerar la periodicidad de la exponencial compleja, simplemente sumamos $N=10$, hasta que se ajuste al dominio de $k$:
+    \begin{align}
+        &=\frac{1}{2}e^{j\frac{2\pi}{10}(3)n} + \frac{1}{2}e^{j\frac{2\pi}{10}(-3+10)n}\\
+        &=\underbrace{\frac{1}{2}}_{c_3}e^{j\frac{2\pi}{10}(3)n} + \underbrace{\frac{1}{2}}_{c_{7}}e^{j\frac{2\pi}{10}(7)n}
+    \end{align}
+    Luego $c_{3}=1/2$, $c_{7}=1/2$, y $c_k=0$ en otro caso.
+\end{solution}
+    
+
+
+\part $x_2[n] = 1-\sin(\pi n/4)$, con $0\leq n \leq 11$ un periodo.
+\begin{solution}
+   En este caso no podemos obtener los coeficientes por inspección pues el periodo $N=12$, no es múltiplo de del periodo
+   de la sinusoidal (8). En este caso encontraremos los coeficientes mediante la expresión:
+
+   \begin{align}
+        c_k&=\frac{1}{N}\sum_{n=0}^{N-1}x_2[n]e^{-j\frac{2\pi}{N}kn}\\
+        &=\frac{1}{12}\sum_{n=0}^{11}[1-\sin(\pi n/4)]e^{-j\frac{2\pi}{12}kn}\\
+        &=\frac{1}{12}\left[\sum_{n=0}^{11}e^{-j\frac{2\pi}{12}kn} - \sum_{n=0}^{11}\sin(\pi n/4)e^{-j\frac{2\pi}{12}kn}\right]\\
+        &=\frac{1}{12}\left[12\delta[k]-\frac{1}{2j}\sum_{n=0}^{11}\left(e^{j\pi n/4}e^{-j\frac{2\pi}{12}kn}-e^{-j\pi n/4}e^{-j\frac{2\pi}{12}kn}\right)\right]\\
+        &=\delta[k]+j\frac{1}{24}\sum_{n=0}^{11}\left(\left[e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}\right]^n - \left[e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}\right]^n\right)\\
+        &=\delta[k]+j\frac{1}{24}\left(\frac{1-e^{j12(\frac{\pi}{4}-\frac{2\pi}{12}k)}}{1-e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}}-\frac{1-e^{-j12(\frac{\pi}{4}+\frac{2\pi}{12}k)}}{1-e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}}\right)\\
+        &=\delta[k]+j\frac{1}{24}\left(\frac{1-e^{j(3\pi-2\pi k)}}{1-e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}}-\frac{1-e^{-j(3\pi+2\pi k)}}{1-e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}}\right)\\
+        &=\delta[k]+j\frac{1}{24}\left(\frac{1-e^{j3\pi}}{1-e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}}-\frac{1-e^{-j3\pi}}{1-e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}}\right)\\
+        &=\delta[k]+j\frac{1}{24}\left(\frac{2}{1-e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}}-\frac{2}{1-e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}}\right)\\
+        &=\delta[k]+j\frac{1}{12}\left(\frac{1}{1-e^{j(\frac{\pi}{4}-\frac{2\pi}{12}k)}}-\frac{1}{1-e^{-j(\frac{\pi}{4}+\frac{2\pi}{12}k)}}\right)
+   \end{align}
+   Este proceso como se puede ver es bastante engorroso. En la próxima ayudantía se verá como encontrar los coeficientes utilizando una propiedad análoga a la utilizada en 2(c) para señales discretas.
+   Con matlab, los coeficientes se encuentran con sencillez, definiendo la secuencia de un periodo base y aplicando la función \texttt{fft}.
+   \begin{minted}{matlab}
+%% 4(b)
+k = 0:11;
+x = 1-sin(pi*k/4);
+N = 12;
+
+c_k = 1/N * fft(x)
+   \end{minted}
+\end{solution}
+\end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

@@ -2,7 +2,7 @@
 \usepackage{preamble}
 
 % disable para esconder
-\usepackage[enable]{easy-todo}
+\usepackage[disable]{easy-todo}
 
 % Comentar para esconder soluciones
 \printanswers
@@ -16,7 +16,7 @@
     Ayudantía 1 - Procesamiento Digital de Señales
     }
 \end{center}
-\listoftodos
+%\listoftodos
 
 \begin{questions}
 
@@ -329,7 +329,7 @@ Donde $x[k]$ es la entrada, y $T_m[k]$ es la salida.
     \begin{solution}
         La F. de T. del sistema linealizado se puede expresar como:
         \begin{equation}
-            H(z) = \frac{\Delta T_m(z)}{\Delta x(z)} = \frac{\Delta T_m(z)}{\Delta T(z)}\cdot \frac{\Delta T(z)}{\Delta X(z)}
+            H(z) = \frac{\Delta T_m(z)}{\Delta X(z)} = \frac{\Delta T_m(z)}{\Delta T(z)}\cdot \frac{\Delta T(z)}{\Delta X(z)}
         \end{equation}
         Luego utilizamos transformada Z en el sistema linealizado para encontrar las expresiones que buscamos:
         \begin{align}
@@ -349,7 +349,44 @@ Donde $x[k]$ es la entrada, y $T_m[k]$ es la salida.
             H(z) = \frac{2}{z-a_0}\cdot z^{-d}=\frac{2}{z^d(z-a_0)}
         \end{equation}
     \end{solution}
+
     \part Encuentre la salida ante una entrada $1+u[k]$ y $d=2$.
+    \begin{solution}
+        Para la respuesta utilizamos el sistema linealizado condierando el punto de operación. Tenemos para la entrada:
+        \begin{align}
+            x[k] = x_e+\Delta x[k] &= 1 + u[k]\\
+                1+\Delta x[k] &= 1 + u[k]\\
+                \Rightarrow \Delta x[k] &= u[k]
+        \end{align}
+        En cuanto a la salida:
+        \begin{align}
+            T_m[k] &= T_{me} + \Delta T_m[k]\\
+            &= \frac{1}{1-a_0} + \Delta T_m[k]
+        \end{align}
+        Obtenemos $\Delta T_m[k]$, mediante la función de transferencia con $d=2$.
+        \begin{align}
+            \Delta T_m(z) &= H(z)\Delta X(z)\\
+            &= \frac{2}{z^2(z-a_0)}\cdot \frac{z}{z-1}\\
+            &= \frac{2}{z(z-a_0)(z-1)}\\
+            &= \frac{c_1}{z} + \frac{c_2}{z-a_0} + \frac{c_3}{z-1}
+        \end{align}
+        \begin{align}
+            &\boxed{c_1 = \left.\frac{2}{(z-a_0)(z-1)}\right|_0 = \frac{2}{a_0}}\\
+            &\boxed{c_2 = \left.\frac{2}{z(z-1)}\right|_{a_0} = \frac{2}{a_0^2-a_0}}\\
+            &\boxed{c_3 = \left.\frac{2}{z(z-a_0)}\right|_{1} = \frac{2}{1-a_0}}
+        \end{align}
+        Finalmente, tenemos que:
+        \begin{align}
+            \Delta T_m(z) &= \frac{2}{a_0}\frac{1}{z} + \frac{2}{a_0^2-a_0}\frac{1}{z-a_0} + \frac{2}{1-a_0}\frac{1}{z-1}\\
+            &= z^{-1}\frac{2}{a_0} + z^{-1}\frac{2}{a_0^2-a_0}\frac{z}{z-a_0} + z^{-1}\frac{2}{1-a_0}\frac{z}{z-1}\\
+            \Delta T_m[k] &= \frac{2}{a_0}\delta[k-1] + \frac{2}{a_0^2-a_0}a_0^{k-1}u[k-1] + \frac{2}{1-a_0}u[k-1]
+        \end{align}
+        Y la respuesta completa sería:
+        \begin{align}
+            T_m[k] &= T_{me} + \Delta T_m[k]\\
+                &=\frac{1}{1-a_0} + \frac{2}{a_0}\delta[k-1] + \frac{2}{a_0^2-a_0}a_0^{k-1}u[k-1] + \frac{2}{1-a_0}u[k-1]
+        \end{align}
+    \end{solution}
 \end{parts}
 
 \end{questions}

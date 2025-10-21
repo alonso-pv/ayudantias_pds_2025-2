@@ -1,0 +1,240 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 3 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question Para las siguientes señales tiempo continuo, encuentre la TFTC:
+\begin{parts}
+\part $x_1(t)=e^{-3|t|}\sin 2\pi t$
+    \begin{solution}
+        La señal puede ser reescrita como:
+        \begin{align}
+            e^{-3|t|}\sin 2\pi t &= \begin{cases}
+                e^{-3t}\sin 2\pi t,\quad t\geq 0\\
+                e^{3t}\sin 2\pi t < 0
+            \end{cases}\\
+            &= e^{-3t}\sin(2\pi t) u(t) + e^{3t}\sin(2\pi t) u(-t)
+        \end{align}
+        Aplicamos transformada de Laplace usando la propiedad de linealidad. Para el primer término:
+        \begin{align}
+            \mathcal{L}\{e^{-3t}\sin(2\pi t) u(t)\}
+            &=\left.\frac{2\pi}{s^2+(2\pi)^2}\right|_{s+3}\\
+            &=\frac{2\pi}{(s+3)^2+4\pi^2}
+        \end{align}
+        Para el segundo término:
+        \begin{align}
+            \mathcal{L}\{e^{3t}\sin(2\pi t) u(-t)\} &= \mathcal{L}\{e^{-3(-t)}\sin(-2\pi [-t])u(-t)\}\\
+            &=-\mathcal{L}\{e^{-3(-t)}\sin(2\pi [-t])u(-t)\}\\
+            &=-\left.\mathcal{L}\{e^{-3t}\sin(2\pi t) u(t)\}\right|_{-s}\\
+            &=-\left.\frac{2\pi}{(s+3)^2+4\pi^2}\right|_{-s}\\
+            &=-\frac{2\pi}{(3-s)^2+4\pi^2}
+        \end{align}
+        Finalmente escribimos la transformada de Laplace como la suma de las partes y
+        realizamos la sustitución para encontrar la TFTC.
+        \begin{align}
+           \mathcal{L}\{e^{-3|t|}\sin 2\pi t\}&= \frac{2\pi}{(s+3)^2+4\pi^2}-\frac{2\pi}{(3-s)^2+4\pi^2}\\
+           &\Big\downarrow s=j\Omega\nonumber\\
+           X_1(j\Omega)&=\frac{2\pi}{(j\Omega+3)^2+4\pi^2}-\frac{2\pi}{(3-j\Omega)^2+4\pi^2}
+        \end{align}
+    \end{solution}
+
+
+\part $x_2(t)=e^{-3|t-5|}\sin(2\pi [t-5])*e^{-3|t+1|}\sin(2\pi [t+1])$
+\begin{solution}
+    Aquí notamos que las señales que se convolucionan se pueden escribir en función de la
+    señal $x_1$ de la parte (a) con un retardo (o adelanto):
+    \begin{equation}
+       x_2(t)=x_1(t-5)*x_1(t+1)
+    \end{equation}
+    Recordemos que la convolución es multiplicación en la frecuencia. Podemos
+    aplicar la TFTC directamente, considerando la propiedad de retardo en el tiempo.
+    \begin{align}
+        x_2(t)&=x_1(t-5)*x_1(t+1)\\
+        &\Big\downarrow \text{TFTC}\nonumber\\
+        X_2(j\Omega)&=e^{-5j\Omega}X_1(j\Omega)\cdot e^{j\Omega}X_1(j\Omega)\\
+        &=e^{-4j\Omega}X_1^2(j\Omega)\\
+        &=e^{-4j\Omega}\left(\frac{2\pi}{(j\Omega+3)^2+4\pi^2}-\frac{2\pi}{(3-j\Omega)^2+4\pi^2}\right)^2
+    \end{align}
+\end{solution}
+\end{parts}
+
+\question Sea la señal:
+$$
+x[n] = \begin{cases}
+        1 - \sin(\pi n /4),\quad 0\leq n \leq 3 \\
+        0,\quad e.t.o.c.
+    \end{cases}
+$$
+\begin{parts}
+    \part Determine la TFTD de la señal.
+    \begin{solution}
+        La señal toma valores distinto de $0$ solo para $0\leq n \leq 3$.
+        Podemos reescribir la señal como una sucesión de impulsos:
+        \begin{align}
+            x[n]&=x[0]\delta[n]+x[1]\delta[n-1]+x[2]\delta[n-2]+x[3]\delta[n-3]\\
+            &=\delta[n]+(1-\sqrt{2}/2)\delta[n-1]+(1-\sqrt{2}/2)\delta[n-3]\\
+            &=\delta[n]+(1-\sqrt{2}/2)(\delta[n-1]+\delta[n-3])
+        \end{align}
+        Aplicamos la transformada Z y posteriormente sustituimos para obtener la TFTD:
+       \begin{align}
+            x[n]&=\delta[n]+(1-\sqrt{2}/2)(\delta[n-1]+\delta[n-3])\\
+            &\Big\downarrow \mathcal{Z}\{\;\}\nonumber\\
+            X(z)&=1+(1-\sqrt{2}/2)(z^{-1}+z^{-3})\\
+            &\Big\downarrow z=e^{j\omega}\nonumber\\
+            X(e^{j\omega})&=1+(1-\sqrt{2}/2)(e^{-j\omega}+e^{-3j\omega})
+       \end{align} 
+    \end{solution}
+
+    \part Se construye la señal periódica $\tilde{x}_N$ de periodo $N\geq4$ a partir de la señal $x$:
+    $$
+    \tilde{x}_N[n]=\sum_{k=-\infty}^{\infty}x[n-kN]
+    $$
+    Encuentre una expresión para los coeficientes de Fourier de la señal periódica en función de $N$.
+    \begin{solution}
+       Para encontrar los coeficientes de Fourier tenemos dos maneras:
+       \begin{equation}
+            c_k=\frac{1}{N}\sum_{k=0}^{1-N}\tilde{x}_N[n]e^{-j\frac{2\pi}{N}kn}\qquad c_k=\left.\frac{1}{N}X(e^{j\omega})\right|_{\omega=\frac{2\pi}{N}k}
+       \end{equation}
+       Con $X(e^{j\omega})$, TFTD de un periodo base. Esta transformada ya la tenemos es la que se
+       determino en 2(a). Sustituyendo tenemos:
+       \begin{align}
+        c_k&=\left.\frac{1}{N}X(e^{j\omega})\right|_{\omega=\frac{2\pi}{N}k}\\
+        &=\frac{1}{N}\left[1+(1-\sqrt{2}/2)(e^{-j\omega}+e^{-3j\omega})\right]_{\omega=\frac{2\pi}{N}k}\\
+        &=\frac{1}{N}\left[1+(1-\sqrt{2}/2)(e^{-j\frac{2\pi}{N}k}+e^{-j\frac{6\pi}{N}k})\right]
+       \end{align}
+    \end{solution}
+
+    \part Escriba los coeficientes de Fourier para $\tilde{x}_4[n]$ $(N=4)$.
+    \begin{solution}
+        Si consideramos la señal de periodo 4 ($N=4$), la expresión para los coeficientes queda:
+        \begin{align}
+        c_k&=\frac{1}{4}\left[1+(1-\sqrt{2}/2)(e^{-j\frac{2\pi}{4}k}+e^{-j\frac{6\pi}{4}k})\right]\\
+        &=\frac{1}{4}\left[1+(1-\sqrt{2}/2)(e^{-j\frac{\pi}{2}k}+e^{-j\frac{3\pi}{2}k})\right]\\
+        &=\frac{1}{4}\left[1+(1-\sqrt{2}/2)(e^{-j\frac{\pi}{2}k}+e^{j\frac{\pi}{2}k})\right]\\
+        &=\frac{1}{4}\left[1+(2-\sqrt{2})\cos\frac{\pi}{2}k\right]
+        \end{align}
+        Obtenemos los coeficientes evaluando $k$ desde 0 hasta $N-1=3$:
+        \begin{align}
+            c_0&=\frac{1}{4}\left[1+(2-\sqrt{2})\cos(0)\right]=0.3964\\
+            c_1&=\frac{1}{4}\left[1+(2-\sqrt{2})\cos\frac{\pi}{2}\right]=0.25\\
+            c_2&=\ldots = 0.1036\\
+            c_3&=\ldots = 0.25
+        \end{align}
+    \end{solution}
+\end{parts}
+
+\question
+Considere el sistema \textbf{causal} descrito por:
+$$
+    y[n] = ay[n-1] + 2x[n]
+$$
+\begin{parts}
+    \part Determine la respuesta en frecuencia $H(e^{j\omega})$ para $a=0.5$.
+    \begin{solution}
+        Aplicamos transformada Z a la ecuación, para encontrar la función de transferencia:
+        \begin{align}
+            y[n] &= ay[n-1] + 2x[n]\\
+            &\Big\downarrow \mathcal{Z}\{\;\}\nonumber\\
+            Y(z) &= az^{-1}Y(z) + 2X(z)\\
+            \Rightarrow H(z)&=\frac{Y(z)}{X(z)}=\frac{2}{1-az^{-1}}\\
+            &\Big\downarrow a=0.5\nonumber\\
+            H(z)&=\frac{2}{1-0.5z^{-1}}
+        \end{align}
+        El sistema tiene un polo $p_1=0.5$. Al tratarse de un sistema causal, deducimos
+        deducimos que la RC es el exterior de una circunferencia. RC: $|z|>0.5$. El sistema
+        es estable podemos obtener la respuesta en frecuencia sustituyendo $z=e^{j\omega}$:
+        \begin{align}
+            H(e^{j\omega})=\frac{2}{1-0.5e^{-j\omega}}=\frac{2}{1-0.5\cos \omega +0.5j\sin \omega}
+        \end{align}
+        Y las respuestas de magnitud y fase son:
+        \begin{align}
+            |H(e^{j\omega})|&=\frac{2}{|1-0.5\cos \omega +0.5j\sin \omega|}& \angle H(e^{j\omega})&=- \angle(1-0.5\cos j\omega +0.5\sin j\omega)\\
+            &=\frac{2}{\sqrt{1.25-\cos\omega}} & &=-\arctan\frac{0.5\sin\omega}{1-0.5\cos\omega}
+        \end{align}
+    \end{solution}
+
+    \part Encuentre la salida $y[n]$ si la secuencia de entrada es $x[n] = 3\sin(\pi n/4)$.
+    \begin{solution}
+        Para encontrar la salida de un sistema estable, con una señal periódica como entrada,
+        consideramos la propiedad de funciones propias de un sistema LTI. Para una señal exponencial
+        compleja de frecuencia angular $\omega_0$, la salida viene dada por:
+        \begin{equation}
+            \boxed{x[n]=e^{j\omega_0n}\xrightarrow{\mathcal{H}}y[n]=H(e^{j\omega_0})e^{j\omega_0 n}=|H(e^{j\omega_0})|e^{j\omega_0 n+\angle H(e^{j\omega_0})}}
+        \end{equation}
+        Esta propiedad, se extiende para señales sinusoidales cuando la respuesta a impulso
+        es real (una demostración aparece en la página 203 del libro guía). En nuestro caso, para 
+        una entrada $x[n]=3\sin(\pi n/4)$:
+        \begin{equation}
+            x[n]=3\sin\Big(\underbrace{\frac{\pi}{4}}_{\omega_0}n\Big)\xrightarrow{\mathcal{H}}3|H(e^{j\pi/4})|\sin\left(\frac{\pi}{4}n+\angle H(e^{j\pi/4})\right)
+        \end{equation}
+        Sustituyendo por las expresiones de magnitud y fase encontradas anteriormente, tenemos:
+        \begin{align}
+            y[n]&=3\frac{2}{\sqrt{1.25-\cos\pi/4}}\sin\left(\frac{\pi}{4}n-\arctan\frac{0.5\sin\omega}{1-0.5\cos\omega}\right)\\
+            &=8.1432\sin\left(\frac{\pi}{4}n-0.5005\right)
+        \end{align}
+    \end{solution}
+
+    \part Repita (b) para una secuencia de entrada $x[n] = \tilde{x}_4[n]$ de la pregunta 2(c).
+    \begin{solution}
+        Para encontrar la respuesta al tomar la señal periódica $\tilde{x}_4$ consideramos
+        su representación mediante los coeficientes de Fourier encontrados en 2(c):
+        \begin{equation}
+            \tilde{x}_4[n]=\sum_{k=0}^{3}c_ke^{j\frac{2\pi}{4}kn}=\sum_{k=0}^{3}c_ke^{j\frac{\pi}{2}kn}
+        \end{equation}
+        Para encontrar la respuesta aplicamos la propiedad de funciones propias para
+        sistemas LTI término a término:
+        \begin{align}
+            \tilde{x}_4[n]&=\sum_{k=0}^{3}c_ke^{j[\frac{\pi}{2}k]n}\\
+            &\Big\downarrow \mathcal{H}\nonumber\\
+            y[n]&=\sum_{k=0}^{3}c_kH(e^{j\frac{\pi}{2}k})e^{j\frac{\pi}{2}kn}
+        \end{align}
+        Evaluando para $0\leq k \leq 3$ y expandiendo la suma:
+        \begin{align}
+            y[n]&=c_0H(e^{0}) +c_1H(e^{j\pi/2})e^{j\frac{\pi}{2}n} +c_2H(e^{j\pi})e^{j\pi n} +c_3H(e^{j3\pi/2})e^{j\frac{3\pi}{2}n}\\
+            \;\nonumber\\
+            &=(0.3964)(4) +(0.25)(1.6-0.8j)e^{j\frac{\pi}{2}n}\nonumber\\
+            &\qquad +(0.1036)(1.33)e^{j\pi n} +(0.25)(1.6+0.8j)e^{j\frac{3\pi}{2}n}\\
+            \;\nonumber\\
+            &=1.5858 +(0.4-0.2j)e^{j\frac{\pi}{2}n}\nonumber\\
+            &\qquad +0.1381e^{j\pi n} +(0.4+0.2j)e^{j\frac{3\pi}{2}n}
+        \end{align}
+    \end{solution}
+
+    \part ¿Que ocurriría si $a=1.5$?
+    \begin{solution}
+        Si $a=1.5$, la función de transferecia queda como:
+        \begin{equation}
+            H(z)=\frac{2}{1-1.5z^{-1}}
+        \end{equation}
+        Con un polo $p_1=1.5$, y RC:$|z|>1.5$ (causal). Concluimos que es sistema no
+        es estable. La respuesta en frecuencia $H(e^{j\omega})$ no existe pues involucra
+        evaluar $z$ en la circunferencia unitaria que no esta en la RC.
+
+        La respuesta con entrada una señal periódica no es posible calcularse.
+    \end{solution}
+\end{parts}
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
