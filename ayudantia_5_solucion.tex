@@ -74,13 +74,36 @@ La señal se muestrea con un periodo de muestreo $T=1/8$ segundos.
 
         Escogiendo una tasa de muestreo sobre $150$ Hz, seremos capaces de recuperar
         la señal sin aliasing. Podemos escoger por ejemplo, $F_s=300$ Hz.
-
         
     \end{solution}
 
     \part La señal se muestrea, y posteriormente se reconstruye utilizando un 
     retentor de orden cero y un filtro ideal que bloquea frecuencias por encima
     de la frecuencia de Nyquist. Bosqueje la señal en cada paso y determine la señal reconstruida.
+    \begin{solution}
+        Se considera $F_s=300$ Hz ($T=1/300$).
+
+        La señal original $x_c(t)$ se muestrea cada $t=nT$.
+        \begin{align}
+            x[n] &= x_c(nT)=2\cos(150\pi nT)\\
+            &=2\cos\left(\frac{150}{300}\pi n\right)\\
+            &=2\cos\left(\frac{\pi}{2} n\right)
+        \end{align}
+        Tras el retentor de orden cero, la señal $x_{SH}(t)$ mantiene el valor de
+        cada muestra por $T=1/300$ tiempo.
+
+        El filtro elimina las frecuencias $F>\frac{F_s}{2}$ introducidas por el retentor
+        y el muestreo. Como
+        se cumple el teorema de muestreo, la señal recuperada es la original con
+        un retardo de $T/2=1/600$ (debido al retentor de orden cero):
+        
+        $x_r(t)=x_c(t-T/2)=2\cos(150\pi [t-T/2])=2\cos(150\pi t- \pi/4)$
+
+        \includegraphics[width=14cm]{imagenes/5.2b.png}
+
+        \underline{Nota}: Se asume que el filtro compensa la atenuación de la señal causada
+        por este.
+    \end{solution}
 \end{parts}
 
 \question
@@ -91,18 +114,129 @@ $$
 \begin{parts}
     \part Determine las frecuencias (en Hz) presentes en la señal.
     \begin{solution}
-        
+        Las frecuencias presentes en la señal se hallan mediante inspección:
+        \begin{align}
+            x_c(t) &= 5\cos\left(200\pi t + \frac{\pi}{6}\right) + 4\sin\left(400\pi t\right)\\
+            &= 5\cos\Big(\underbrace{100}_{F_1}\cdot2\pi t + \frac{\pi}{6}\Big) + 4\sin\Big(\underbrace{200}_{F_2}\cdot2\pi t\Big)
+        \end{align}
+
+        Las frecuencias son $F_1=100$ Hz, y $F_2=200$ Hz.
     \end{solution}
     
     \part Determine la frecuencia de Nyquist, y tasa de muestreo para un muestreo
     sin aliasing.
+    \begin{solution}
+        La frecuencia de Nyquist $F_H$ corresponde a la mayor frecuencia en la señal.
+        En este caso $F_2=200$ Hz es la mayor frecuencia, por lo que $F_H=200$ Hz.
 
-    \part La señal se muestrea con $F_s=500$ Hz (ADC ideal). Determine el espectro $X(e^{j\Omega T})$
+        Para una tasa de muestreo sin aliasing, consideramos el teorema de Nyquist.
+        \begin{align}
+            F_s&\geq2F_H\\
+            &\geq 400\text{ Hz}
+        \end{align}
+
+        Para una tasa de muestreo sin aliasing, esta debe ser mayor o igual a $400$ Hz.
+    \end{solution}
+
+    \part La señal se muestrea con $F_s=500$ Hz (ADC ideal). Determine el espectro $|X(e^{j\Omega T})|$
     de la señal muestreada $x[n]$ y grafique su magnitud como función de la frecuencia $F$ en Hz.
+    \begin{solution}
+        \underline{Nota}: $\mathcal{F}\{e^{j\Omega_0t}\}=\pi\delta(\Omega-\Omega_0)$
+
+        Notemos que la señal se puede descomponer en exponenciales complejas:
+        \begin{align}
+            x_c(t) &= 5\cos\left(200\pi t + \frac{\pi}{6}\right) + 4\sin\left(400\pi t\right)\\
+            &=\frac{5e^{j\pi/6}}{2}e^{j200\pi t} + \frac{5e^{-j\pi/6}}{2}e^{-j200\pi t}
+            + \frac{4}{2}e^{j400\pi t}-\frac{4}{2}e^{-j400\pi t}
+        \end{align}
+
+        El espectro original tiene picos en las frecuencias $\pm 200\pi$ y $\pm400\pi$.
+        En Hz, estas son $\pm100$ Hz, y $\pm 200$ Hz.
+
+        Al muestrear la señal, el espectro se hace periódico. Aparecen copias del
+        espectro original desplazadas en $2\pi/T=2\pi F_s=1000\pi$ hacia la izquierda
+        y hacia la derecha. En Hz, las copias se desplazan $F_s=500$ Hz hacia los lados.
+
+        En el gráfico, las copias debido al muestreo se muestran en rojo.
+        
+        \includegraphics[width=14cm]{imagenes/5.3c.png}
+
+        Al cumplirse el teorema del muestreo, no hay aliasing (las copias no se
+        cruzan con el espectro original).
+    \end{solution}
 
     \part Determine la señal $x_r(t)$ reconstruida utilizando un DAC ideal.
+    \begin{solution}
+        Dado que se cumple el teorema del muestreo (con $F_s=500$ Hz $> 400$ Hz),
+        se recupera la señal original (DAC ideal).
+        
+        DAC ideal reconstruye la señal tomando las frecuencias $|F|\leq F_s/2=250$ Hz.
+
+        \includegraphics[width=14cm]{imagenes/5.3d.png}
+
+        Como se puede ver en el gráfico esto nos deja con el espectro original.
+
+        La señal reconstruida es igual a la original: $x_r(t)=x_c(t)$.
+    \end{solution}
 
     \part Repita (c) y (d), muestreando la señal con $F_s=350$ Hz.
+    \begin{solution}
+        Al muestrear con $F_s=350$ Hz, no se cumple el teorema del muestreo
+        
+        (350 Hz <\, 400 Hz).
+
+        Las copias del espectro original se desplazan $F_s=350$ Hz hacia la izquierda
+        y hacia la derecha.
+
+        \includegraphics[width=14cm]{imagenes/5.3e.png}
+
+        Como se puede ver, el espectro de las copias se cruza con el espectro original.
+        Hay aliasing.
+
+        Al reconstruir la señal, el DAC ideal toma las frecuencias $|F|<F_s/2=175$ Hz.
+
+        \includegraphics[width=14cm]{imagenes/5.3e.2.png}
+
+        El espectro dentro de las lineas punteadas ya no es el espectro original.
+
+        Para hallar la respuesta reconstruida, consideramos la formula de interpolación
+        del DAC ideal (banda limitada):
+        \begin{align}
+            x_r(t)&=\sum_{n=-\infty}^{\infty}x[n]g_{BL}(t-nT)\\
+            g_{BL}(t)&=\frac{\sin(\pi t/T)}{\pi t/T}
+        \end{align}
+
+        En este caso al tratarse de señales sinusoidales, se puede encontrar de
+        una manera un poco más cualitativa:
+
+        1. Aplicamos el muestreo.
+        \begin{align}
+            x[n]&=x_c(nT)=5\cos\left(200\pi nT + \frac{\pi}{6}\right) + 4\sin\left(400\pi nT\right)\\
+            &=5\cos\left(\frac{200}{350}\pi n + \frac{\pi}{6}\right) + 4\sin\left(\frac{400}{350}\pi n\right)
+        \end{align}
+
+        2. En el dominio discreto la frecuencia es periódica. Llevamos todas las
+        frecuencias al intervalo $[-\pi,\pi]$. Vemos que $400\pi/350>\pi$:
+        \begin{align}
+            x[n]&=5\cos\left(\frac{200}{350}\pi n + \frac{\pi}{6}\right) + 4\sin\left(\frac{400}{350}\pi n\right)\\
+            &=5\cos\left(\frac{200}{350}\pi n + \frac{\pi}{6}\right) + 4\sin\left(\frac{400}{350}\pi n-2\pi n\right)\\
+            &=5\cos\left(\frac{200}{350}\pi n + \frac{\pi}{6}\right) + 4\sin\left(\frac{400}{350}\pi n-\frac{700}{350}\pi n\right)\\
+            &=5\cos\left(\frac{200}{350}\pi n + \frac{\pi}{6}\right) + 4\sin\left(-\frac{300}{350}\pi n\right)\\
+            &=5\cos\left(\frac{200}{350}\pi n - \frac{\pi}{6}\right) - 4\sin\left(\frac{300}{350}\pi n\right)\\
+        \end{align}
+
+        3. El DAC ideal ``deshace'' la sustitución $t=nT=n/350$:
+        \begin{align}
+            x[n]&=5\cos\left(\frac{200}{350}\pi n - \frac{\pi}{6}\right) - 4\sin\left(\frac{300}{350}\pi n\right)\\
+            &\Big\downarrow t=n/350\nonumber\\
+            x_r(t)&=5\cos\left(200\pi t - \frac{\pi}{6}\right) - 4\sin(300\pi t)
+        \end{align}
+
+        En la señal reconstruida, desaparece la frecuencia 200 Hz ($400\pi$), y
+        aparece otra frecuencia a 150 Hz ($300\pi$) producto del aliasing. Esto
+        concuerda con el gráfico mostrado anteriormente.
+
+    \end{solution}
 \end{parts}
 
 \end{questions}

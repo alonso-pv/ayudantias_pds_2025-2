@@ -1,0 +1,202 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+\usepackage{bm}
+\usepackage{amssymb,amsmath}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 7 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question
+Sea la secuencia $x[n]=\{1\;1\;0\;3\}$
+\begin{parts}
+    \part Calcule la TFD $X[k]$ utilizando la matriz $\bm{W_4}$.
+    \begin{solution}
+        Recordemos que la TFD se define por:
+        \begin{equation}
+            X[k] = \sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}kn}
+        \end{equation}
+
+        Y definiendo $W_N=e^{-j\frac{2\pi}{N}}$:
+        \begin{equation}
+            X[k] = \sum_{n=0}^{N-1}x[n]W_N^{kn}
+        \end{equation}
+        Esta suma se puede reescribir como un producto entre una matriz $\bm{W_N}$
+        y un vector $\bm x$. De forma general:
+        \begin{gather}
+            \bm{X}=\bm{W_Nx}\\
+            \begin{bmatrix}
+                X[0]\\X[1]\\X[2]\\\vdots\\X[N-1]
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1 & 1 & 1 & \dots & 1\\
+                1 & W_N^1 & W_N^2 & \dots & W_N^{N-1}\\  
+                1 & W_N^2 & W_N^4 & \dots & W_N^{2(N-1)}\\  
+                \vdots & \vdots & \vdots & \ddots & \vdots\\  
+                1 & W_N^{N-1} & W_N^{2(N-1)} & \dots & W_N^{(N-1)(N-1)}\\  
+            \end{bmatrix}
+            \begin{bmatrix}
+                x[0]\\  x[1]\\  x[2]\\ \vdots\\x[N-1]
+            \end{bmatrix}
+        \end{gather}
+        Para la matriz $\bm{W_N}$: 
+        \begin{itemize}
+            \item Tiene dimensiones $N\times N$.
+            \item La primera fila y columna son solo unos.
+            \item Para la fila $k$, los exponentes de $W_N$ aumentan de $k-1$ en $k-1$. Ej: La segunda fila los exponentes
+        van de uno en uno, para la tercera fila van de dos en dos, etc...
+        \item Es simétrica ($\bm{W_N=W_N^\text{T}}$)
+        \end{itemize} 
+        En el caso de la secuencia $x[n]=\{1\; 1\; 0\; 3\}$ ($N=4$) la transformada es:
+        \begin{align}
+            X[k]=\sum_{n=0}^{3}x[n]W_{4}^{kn}
+        \end{align}
+        y en forma matricial:
+        \begin{gather}
+            \bm{X}=\bm{W_4x}\\
+            \begin{bmatrix}
+                X[0]\\ X[1]\\ X[2]\\ X[3] 
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & W_4^1 & W_4^2 & W_4^3 \\
+                1 & W_4^2 & W_4^4 & W_4^6 \\
+                1 & W_4^3 & W_4^6 & W_4^9 \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                x[0]\\  x[1]\\  x[2]\\  x[3]
+            \end{bmatrix}
+        \end{gather}
+        Como $W_N^n=W_N^{n+N}$, entonces $W_4^4=W_4^0$, $W_4^6=W_4^2$ y $W_4^9=W_4^1$ se escribe:
+         \begin{align}
+            \begin{bmatrix}
+                X[0]\\ X[1]\\ X[2]\\ X[3] 
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & W_4^1 & W_4^2 & W_4^3 \\
+                1 & W_4^2 & W_4^0 & W_4^2 \\
+                1 & W_4^3 & W_4^2 & W_4^1 \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                x[0]\\  x[1]\\  x[2]\\  x[3]
+            \end{bmatrix}
+        \end{align}
+        Notando que $W_4^0=1$, $W_4^1=e^{-j\frac{2\pi}{4}}=-j$, $W_4^2=-1$ y $W_4^3=j$, y reemplazando
+        por los valores de $x[n]$:
+        \begin{align}
+            \begin{bmatrix}
+                X[0]\\ X[1]\\ X[2]\\ X[3] 
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & -j & -1 & j \\
+                1 & -1 & 1 & -1 \\
+                1 & j & -1 & -j \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                1\\  1\\  0\\  3
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1+1+0+3\\
+                1-j+0+3j\\
+                1-1+0-3\\
+                1+j+0-3j
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+                5\\1+2j\\-3\\1-2j
+            \end{bmatrix}
+        \end{align}
+        Es decir: $X[k]=\{5\quad {1+2j}\quad-3\quad1-2j\}$
+    \end{solution}
+
+    \part Determine la la TFD inversa $z[n]$ de $W^{2k}_4X[k]$. Grafique $z[n]$
+    y $x[n]$ para su comparación.
+    \begin{solution}
+        Para el cálculo de la transformada inversa de
+        $W_4^{2k}X[k]=e^{-j\frac{2\pi}{4}2k}X[k]$ debemos tener en cuenta la propiedad
+        de desplazamiento circular. Sea una señal $x[n]$ y $X[k]$ su TFD de $N$ puntos:
+        \begin{align}
+            \boxed{x[\langle n-m \rangle_N]
+            \stackrel{TFD}{\longleftrightarrow}
+            W_N^{mk}X[k]=e^{-j\frac{2\pi}{N}mk}X[k]}
+        \end{align} Con $\langle*\rangle_N$ la operación módulo $N$. Notar que la
+        exponencial debe estar en forma $e^{-j\frac{2\pi}{N}mk}$.
+        
+        Al aplicar la propiedad en nuestro caso ($N=4$, $m=2$):
+        \begin{equation}
+            W_4^{2k}X[k]\xrightarrow[]{TFDI}z[n]=x[\langle n-2 \rangle_4]
+        \end{equation}
+
+        Para encontrar los valores de la señal para $n=0,\,1,\,2,\,3$ se retarda
+        la señal en $m=2$ rotando los valores que se salen del rango $0\leq n\leq 3=N-1$:
+        \begin{align}
+            x[n]&=\{1\;1\;0\;3\}\\
+            &\downarrow\nonumber\\
+            z[n]=x[\langle n-2\rangle_4]&=\{0\;3\;1\;1\}
+        \end{align}
+
+        Al graficar $x[n]$, su extensión periódica y $z[n]$ vemos como la TFD no ``ve''
+        la señal $x[n]$ sino su extensión periódica al aplicar la propiedad de desplazamiento:
+        
+        \includegraphics[width=14cm]{imagenes/7.1b.png}
+        
+    \end{solution}
+
+    \part Realice la convolución circular $x[n]\circledast h[n]$, con $h[n]=\{1\;0\;1\;0\}$
+    en el plano temporal.
+
+    \part Repita (c) usando las TFD $X[k]$ y $H[k]$.
+\end{parts}
+
+\question Muestre brevemente como se realizaría el calculo de la TFD de $x[n]=\{0\;1\;2\;3\}$
+usando el algoritmo de Transformada Rápida de Fourier visto en clases.
+
+\question Implemente en Matlab el algoritmo de Transformada Rápida de Fourier en
+Matlab. Puede asumir que el vector de entrada es de $N=2^{m}$ una potencia de dos.
+
+ \begin{parts}
+    \part Compruebe la validez calculando la TFD $x[n]$ de la pregunta 1.
+    \part Considere la siguiente implementación directa (por definición) de la TFD:
+\begin{minted}{matlab}
+function Xdft=dftdirect(x)
+% Direct computation of the DFT
+N=length(x); Q=2*pi/N;
+for k=1:N
+S=0;
+for n=1:N
+W(k,n)=exp(-1j*Q*(k-1)*(n-1));
+S=S+W(k,n)*x(n);
+end
+Xdft(k)=S;
+end
+\end{minted}
+
+    Usando las funciones \texttt{tic} y \texttt{toc} de Matlab, compare
+    el rendimiento de su implementación y la de \texttt{dftdirect}. Para la generación del vector de entrada de prueba puede utilizar la función \texttt{rand}.
+ \end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

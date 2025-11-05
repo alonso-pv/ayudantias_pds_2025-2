@@ -1,0 +1,381 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+\usepackage{cancel}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 6 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+
+\question Determinar la TFD de $x[n]=5(0.8)^n$, $0\leq n \leq 15$.
+\begin{solution}
+    Con muestras $n=0,\,1,\,2,\dots,\,15$, tenemos $N=16$ muestras.
+    Por definición:
+    \begin{align}
+        X[k]&=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}kn}\\
+        &=\sum_{n=0}^{15}5(0.8)^ne^{-j\frac{2\pi}{16}kn}\\
+        &=5\sum_{n=0}^{15}\left(0.8e^{-j\frac{2\pi}{16}k}\right)^n\\
+        &=5\frac{1-0.8e^{-j\frac{2\pi}{\cancel{16}}\cancel{16}k}}{1-0.8e^{-j\frac{2\pi}{16}k}}\\
+        &=5\frac{1-0.8}{1-0.8e^{-j\frac{2\pi}{16}k}}\\
+        &=5\frac{0.2}{1-0.8e^{-j\frac{2\pi}{16}k}}\\
+        &=\frac{1}{1-0.8e^{-j\frac{2\pi}{16}k}},\quad 0\leq k \leq N-1
+    \end{align}
+\end{solution}
+
+\question Sea $x[n]$ una señal discreta real, con $X[k]$ TFD de $N$ puntos de la
+señal. Muestre que:
+\begin{parts}
+    \part $X[0]$ es real.
+    \begin{solution}
+        Por definición de la TFD:
+        \begin{align}
+            X[0]=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}(0)n}\\
+            X[0]=\sum_{n=0}^{N-1}x[n]
+        \end{align}
+        Como $x[n]$ es real, la suma es real y $X[0]$ es real.
+    \end{solution}
+    \part $X[N/2]$ es real si $N$ es par.
+    \begin{solution}
+        Por definición:
+        \begin{align}
+            X[N/2]&=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}(\frac{N}{2})n}\\
+            &=\sum_{n=0}^{N-1}x[n]e^{-j\pi n}\\
+            &=\sum_{n=0}^{N-1}x[n]\Big(\cos(\pi n)-j\sin(\pi n)\Big)\\
+            &=\sum_{n=0}^{N-1}x[n]\Big((-1)^n-0\Big)\\
+            &=\sum_{n=0}^{N-1}x[n](-1)^n
+        \end{align}
+        $x[n](-1)^n$ es real. Por lo tanto la suma es real y $X[N/2]$ es real.
+    \end{solution}
+    \part $X[N-k]=X^*[k]$, con $1 \leq k \leq N-1$
+    \begin{solution}
+        \begin{align}
+            X[N-k]&=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}(N-k)n}\\
+            &=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}(N)n}e^{-j\frac{2\pi}{N}(-k)n}\\
+            &=\sum_{n=0}^{N-1}x[n]\underbrace{e^{-j2\pi n}}_{1}e^{j\frac{2\pi}{N}kn}\\
+            &=\sum_{n=0}^{N-1}x[n]e^{j\frac{2\pi}{N}kn}\\
+            &=\sum_{n=0}^{N-1}x[n]\left(e^{-j\frac{2\pi}{N}kn}\right)^*\\
+            &=\sum_{n=0}^{N-1}\left(x[n]e^{-j\frac{2\pi}{N}kn}\right)^*\quad(x[n] \text{ real})\\
+            &=\left(\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}kn}\right)^*\\
+            &=X^*[k]
+        \end{align}
+    \end{solution}
+\end{parts}
+
+\question Sea $x_c(t)=5e^{-10t}\sin(20\pi t)u(t)$
+\begin{parts}
+    \part Determine la TFTC $X_c(j\Omega)$ de la señal.
+    \begin{solution}
+        \begin{align}
+           x_c(t)&=5e^{-10t}\sin(20\pi t)u(t)\\
+           &\Big\downarrow\mathcal{L}\nonumber\\
+           X_c(s)&=5\left.\frac{20\pi}{s^2+(20\pi)^2}\right|_{s+10}\\
+           X_c(s)&=5\frac{20\pi}{(s+10)^2+400\pi^2}\\
+           &\Big\downarrow s=j\Omega\nonumber\\
+           X_c(j\Omega)&=\frac{100\pi}{(j\Omega+10)^2+400\pi^2}
+        \end{align}
+    \end{solution}
+    \part Muestre como se puede aproximar la TFTC usando la TFD, al muestrear la
+    señal con un periodo de muestreo T.
+    \begin{solution}
+        Por definición:
+        \begin{align}
+            X_c(j\Omega)&=\int_{-\infty}^{\infty}x_c(t)e^{-j\Omega t}dt\\
+            &\Big\downarrow x_c\text{ es de soporte positivo}\nonumber\\
+            &=\int_{0}^{\infty}x_c(t)e^{-j\Omega t}dt
+        \end{align}
+        Muestreando la señal en $t=nT$ podemos aproximar la integral como una
+        suma de Riemann. El diferencial $dt$ pasa a ser el periodo de muestreo $T$.
+        \begin{equation}
+            X_c(j\Omega)\approx\sum_{n=0}^{\infty}x_c(nT)e^{-j\Omega nT}\cdot T\\
+        \end{equation}
+        Despreciamos los $x_c(nT)$ para valores de $n\geq N$. Convertimos la serie
+        en una suma finita.
+        \begin{equation}
+            X_c(j\Omega)\approx\sum_{n=0}^{N-1}x_c(nT)e^{-j\Omega nT}\cdot T\\
+        \end{equation}
+        Aún tenemos una suma de funciones continuas en $\Omega$. Muestreando esta
+        variable se obtiene una suma discreta de señales discretas. Teniendo en cuenta
+        que la frecuencia es periódica (dado que se muestreó en el tiempo), muestreamos
+        la frecuencia tal que la exponencial recorra el intervalo $-\pi$ a $\pi$ y se
+        obtenga la expresión de la TFD.
+        Muestreando en $\Omega=\frac{2\pi}{NT}k$
+        \begin{align}
+            \left.X_c(j\Omega)\right|_{\Omega=\frac{2\pi}{NT}k}&\approx\sum_{n=0}^{N-1}x_c(nT)e^{-j\frac{2\pi}{NT}k nT}\cdot T\\
+            &\approx T\sum_{n=0}^{N-1}x_c(nT)e^{-j\frac{2\pi}{N}k n}=TX[k]
+        \end{align}
+        Con $X[k]$ TFD de $N$ puntos de $x[n]=x_c(nT)$. La precisión de la aproximación
+        depende de la frecuencia de muestreo $1/T$ (entra en juego el teorema de nyquist,
+        aliasing), y la cantidad de muestras $N$.
+    \end{solution}
+    \part Use el comando \texttt{fft} Matlab para calcular la aproximación, y compare
+    la aproximación con la expresión analítica en un gráfico.
+    \begin{solution}
+        Para los gráficos se toma en cuenta la el muestreo que se realiza en la frecuencia.
+        Se utiliza la sustitución $\Omega=\frac{2\pi}{NT}k$.
+
+        Tambien hay que notar que al muestrear la señal la frecuencia se hace
+        periódica. Por esto, las muestras $k>N/2$ son más bien un reflejo de las
+        frecuencias con $k<0$. Para solucionar esto se ocupa \texttt{fftshift} que
+        reordena la TFD automáticamente y la centra en torno a $k=0$. Luego para
+        graficar se debe ocupar $N/2<k<N/2-1$. 
+        \begin{minted}{matlab}
+%% 3
+% Expresión analítica
+X = @(Om) 100*pi./( (1j*Om+10).^2 + 400*pi^2 );
+
+% Señal continua
+xc = @(t) 5.*exp(-10*t).*sin(20*pi*t);
+
+% Parámetros para el muestreo
+Fs = 200;
+T = 1/Fs;
+N = 400;
+n = 0:N-1;
+
+X_dft = fft(xc(n*T));
+
+X_approx = T * fftshift(X_dft);
+
+% Muestreo de la frecuencia
+k = -N/2:N/2-1;
+Om_approx = 2*pi/(N*T)*k;
+
+Om_cont = linspace(Om_approx(1), Om_approx(end), 2000);
+
+figure;
+subplot(2,1,1)
+stem(Om_approx, abs(X_approx)); hold on
+plot(Om_cont, abs(X(Om_cont)));
+title("Magnitud de X(j\Omega)");
+subplot(2,1,2)
+stem(Om_approx, angle(X_approx)); hold on
+plot(Om_cont, angle(X(Om_cont)));
+title("Fase de X(j\Omega)"); 
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/6.3c.png}
+    \end{solution}
+\end{parts}
+
+\question Sea una señal periódica $\tilde{x}_c(t)$, con periodo $T_0=5$ dada por
+$\tilde{x}_c(t)=e^{-t}$, $0\leq t \leq 5$.
+
+Los coeficientes de Fourier de la señal vienen dados por:
+$$
+c_k=\frac{1}{T_0}\int_{0}^{T_0}\tilde{x}_c(t)e^{-jk\frac{2\pi}{T_0}t}
+    =\frac{1-e^{-5}}{5+j2\pi k}
+$$
+\begin{parts}
+    \part Muestre como se pueden aproximar los coeficientes usando la TFD, al muestrear
+    la señal con un periodo de muestreo $T$.
+    \begin{solution}
+        De la definición de los coeficientes de Fourier:
+        \begin{align}
+            c_k=\frac{1}{T_0}\int_{0}^{T_0}\tilde{x}_c(t)e^{-j\frac{2\pi}{T_0}kt}
+        \end{align}
+        Particionando el intervalo $[0,T_0]$ en $N$ subintervalos de longitud $T=T_0/N$
+        (se muestrea la señal en $t=nT$),
+        se aproxima la integral como una sumatoria. (Notar que $T_0=NT$)
+        \begin{align}
+           c_k&\approx\frac{1}{NT}\sum_{n=0}^{N-1}\tilde{x}_c(nT)e^{-j\frac{2\pi}{NT}knT}\cdot T\\
+           c_k&\approx\frac{1}{N}\sum_{n=0}^{N-1}\tilde{x}_c(nT)e^{-j\frac{2\pi}{N}kn}=\frac{1}{N}X[k]
+        \end{align}
+        Con $X[k]$ TFD de $N$ muestras de $x[n]=\tilde{x}_c(nT)$. La aproximación
+        mejora a medida que $N$ aumenta (y $T=T_0/N$ disminuye). Notar también, que con $N$
+        muestras se obtienen los coeficientes $N$ ($0\leq k \leq N-1$).
+    \end{solution}
+
+    \part Aproxime los coeficientes usando el comando \texttt{fft} en Matlab. Compare
+    la aproximación con la expresión analítica de los coeficientes en un gráfico.
+    \begin{solution}
+
+       \begin{minted}{matlab}
+%% 4 Aproximación de coeificientes de fourier mediante TFD
+% Expresión analítica
+c = @(k) (1-exp(-5))./(5+2j*pi*k);
+
+% Señal continua
+xc = @(t) exp(-t); % 0<t<5
+T0 = 5;
+
+% Muestreo
+N = 100;
+T = T0/N;
+n = 0:N-1;
+
+% Approximacion de coeficientes
+X_dft = fft(xc(n*T));
+c_approx = fftshift(X_dft)/N;
+k = -N/2:N/2-1;
+
+figure;
+subplot(2,1,1)
+stem(k, abs(c_approx)); hold on
+stem(k, abs(c(k)), "x");
+legend("aproximación de c_k", "c_k analítico")
+title("Magnitud de c_k")
+%xlim([-N/4, N/4])
+subplot(2,1,2)
+stem(k, angle(c_approx)); hold on
+stem(k, angle(c(k)), "x");
+legend("aproximación de c_k", "c_k analítico")
+title("Fase de c_k");
+%xlim([-N/4, N/4]) 
+       \end{minted}
+
+       \includegraphics[width=14cm]{imagenes/6.4b.png}
+    \end{solution}
+\end{parts}
+
+\question Considere la señal real:
+$$
+x[n]=\begin{cases}
+   \cos(0.25\pi n),&0 \leq n \leq 99\\
+   0. &\text{en otro caso} 
+\end{cases}
+$$
+\begin{parts}
+    \part Determine la TFTD $X(e^{j\omega})$.
+    \begin{solution}
+        Por definición:
+        \begin{align}
+            X(e^{j\omega})&=\sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}\\
+            &=\sum_{n=0}^{99}\cos(0.25\pi n)\\
+            &=\sum_{n=0}^{99}\frac{1}{2}\left(e^{j0.25\pi n}+e^{-j0.25\pi n}\right)e^{-j\omega n}\\
+            &=\frac{1}{2}\left(\sum_{n=0}^{99}e^{j(0.25\pi -\omega)n}+\sum_{n=0}^{99}e^{-j(0.25\pi+\omega) n}\right)\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(0.25\pi-\omega)100}}{1-e^{j(0.25\pi-\omega)}}+\frac{1-e^{-j(0.25\pi+\omega)100}}{1-e^{-j(0.25\pi+\omega)}}\right)
+        \end{align}
+    \end{solution}
+
+    \part Calcule la TFD de $N=100$ puntos de la señal.
+    \begin{solution}
+        Existe una propiedad para calcular la TFD a partir de la TFTD. Veremos
+        como y cuando se puede utilizar.
+
+        Por definición:
+        \begin{align}
+            X[k]&=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}kn}\\
+            &=\sum_{n=0}^{99}x[n]e^{-j\frac{2\pi}{100}kn}
+        \end{align}
+        Notemos que la señal $x[n]$ es 0 para $n<0$ y $n>99$. Podemos añadir terminos
+        a la suma sin cambiar su valor.
+        \begin{align}
+            X[k]&=\sum_{n=0}^{99}x[n]e^{-j\frac{2\pi}{100}kn}\\
+            &=\sum_{n=-\infty}^{\infty}x[n]e^{-j\frac{2\pi}{100}kn}
+        \end{align}
+        La serie es sospechosamente similar a la expresión de la TFTD. En efecto,
+        en lugar de $\omega$ está $2\pi k/100$. La expresión es un muestreo de
+        $X(e^{j\omega})$ en $\omega=2\pi k/100$:
+        \begin{align}
+            X[k]&=\sum_{n=-\infty}^{\infty}x[n]e^{-j\frac{2\pi}{100}kn}=\left.X(e^{j\omega})\right|_{\omega=\frac{2\pi}{100}k}\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(0.25\pi-\omega)100}}{1-e^{j(0.25\pi-\omega)}}+\frac{1-e^{-j(0.25\pi+\omega)100}}{1-e^{-j(0.25\pi+\omega)}}\right)_{\omega=\frac{2\pi}{100}k}\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(0.25\pi-\frac{2\pi k}{100})100}}{1-e^{j(0.25\pi-\frac{2\pi k}{100})}}+\frac{1-e^{-j(0.25\pi+\frac{2\pi k}{100})100}}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\right)\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(25\pi-2\pi k)}}{1-e^{j(0.25\pi-\frac{2\pi k}{100})}}+\frac{1-e^{-j(25\pi+2\pi k)}}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\right)\\
+            &=\frac{1}{2}\left(\frac{2}{1-e^{j(0.25\pi-\frac{2\pi k}{100})}}+\frac{2}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\right)\\
+            &=\frac{1}{1-e^{j(0.25\pi-\frac{2\pi k}{100})}}+\frac{1}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\\
+        \end{align}
+
+        Esta es una propiedad de la TFD. En resumen:
+
+        Sea $x[n]$, con $X(e^{j\omega})$ su TFTD. Si $x[n]=0$ para $n<0$, $n\geq N$
+        entonces la TFD de $N$ puntos viene dado por:
+        \begin{equation}
+            X[k]=\left.X(e^{j\omega})\right|_{\omega=2\pi k/N}
+        \end{equation}
+
+        Esto también aplica en el sentido inverso. Se puede usar la TFD para obtener
+        muestras de la TFTD, si se cumple $x[n]=0$ para $n<0$ y $n\geq N$.
+
+        Por otro lado si $x[n]\approx 0$ para los $n$ mencionados, la TFD
+        \textbf{aproxima} muestras de la TFTD.
+    \end{solution}
+
+    \part Repita con $N=200$.
+    \begin{solution}
+        Podemos usar la propiedad en el punto anterior.
+        \begin{align}
+            X[k]=\sum_{n=0}^{N-1}x[n]e^{-j\frac{2\pi}{N}kn}=\sum_{n=0}^{199}x[n]e^{-j\frac{2\pi}{200}kn}
+        \end{align}
+        Como $x[n]=0$ para $n<0$ y $n\geq200$, podemos concluir que:
+        \begin{align}
+            X[k]&=\left.X(e^{j\omega})\right|_{\omega=2\pi k/200}\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(0.25\pi-\omega)100}}{1-e^{j(0.25\pi-\omega)}}+\frac{1-e^{-j(0.25\pi+\omega)100}}{1-e^{-j(0.25\pi+\omega)}}\right)_{\omega=\frac{2\pi}{200}k}\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(0.25\pi-\frac{2\pi k}{200})100}}{1-e^{j(0.25\pi-\frac{2\pi k}{200})}}+\frac{1-e^{-j(0.25\pi+\frac{2\pi k}{200})100}}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\right)\\
+            &=\frac{1}{2}\left(\frac{1-e^{j(25\pi-\pi k)}}{1-e^{j(0.25\pi-\frac{2\pi k}{200})}}+\frac{1-e^{-j(25\pi+\pi k)}}{1-e^{-j(0.25\pi+\frac{2\pi k}{100})}}\right)\\
+        \end{align}
+    \end{solution}
+
+    \part Superponga ambos resultados con la TFTD en Matlab.
+    \begin{solution}
+        En esta ocasión al calcular la TFD (con $N=200$) con \texttt{fft} se obtienen algunos
+        valores de la transformada que deberían ser cero, que por razones numéricas
+        se obtienen valores muy cercanos, pero distintos de cero. Para solucionar
+        ese problema se aplica una tolerancia sobre el resultado de \texttt{fft}
+        para forzar a cero los valores que sean muy cercanos a cero.
+        \begin{minted}{matlab}
+%% 5 TFTD y TFD comparadas
+% Expresión analítica
+X_tftd = @(w) ...
+ 1/2*( 1 - exp(1j*(0.25*pi-w)*100) )./( 1 - exp(1j*(0.25*pi-w)) ) ...
+ + 1/2*( 1 - exp(-1j*(0.25*pi+w)*100) )./( 1 - exp(-1j*(0.25*pi+w)) );
+
+% Señal discreta
+x = @(n) cos(0.25*pi*n).*(n>=0 & n<=99);
+
+% TFD
+N=100;
+%N=200;
+X_tfd = fft(x(0:N-1));
+
+% Tolerancia
+% Fases erróneas en valores que deberían ser cero.
+tol = 10^-6;
+X_tfd(X_tfd<tol) = 0;
+
+w = linspace(0, 2*pi, 1000);
+
+% Muestreo de la frecuencia
+k = 0:N-1;
+w_discr = 2*pi*k/N;
+
+figure
+subplot(2,1,1)
+plot(w, abs(X_tftd(w))); hold on;
+stem(w_discr, abs(X_tfd));
+title("Magnitud de X(e^{j\omega})")
+subplot(2,1,2)
+plot(w, angle(X_tftd(w))); hold on;
+stem(w_discr, angle(X_tfd));
+title("Fase de X(e^{j\omega})")
+        \end{minted}
+        Con $N=100$:\\
+        \includegraphics[width=14cm]{imagenes/6.5d.png}\pagebreak
+
+        Con $N=200$:\\
+        \includegraphics[width=14cm]{imagenes/6.5d2.png}
+    \end{solution}
+\end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
