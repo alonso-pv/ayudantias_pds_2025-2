@@ -1,0 +1,478 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+\usepackage{fancyvrb}
+\usepackage{framed}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 8 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+
+\question Un sistema tiempo discreto es descrito por el diagrama de flujo de
+señales a continuación:\\
+\includegraphics[width=15cm]{imagenes/8.1.png}
+
+\begin{parts}
+\part Determine la ecuación de diferencias que relaciona la salida $y[n]$ con la
+entrada $x[n]$.
+
+\begin{solution}\\
+    \includegraphics[width=14cm]{imagenes/ayudantia8.1.drawio.png}\\
+    Asignando la señal $w[n]$ en el punto indicado, podemos escribir una ecuación
+    de diferencias para $y[n]$:
+    \begin{align}
+        y[n]&= 3(2x[n] + w[n]) + 6w[n-1]\\
+            &= 6x[n] + 3w[n] + 6w[n-1]
+    \end{align}
+
+    Mirando desde $w[n]$ hacia atrás escribimos una ecuación de diferencias para
+    $w[n]$:
+    \begin{equation}
+        w[n]=x[n]+\frac{1}{3}w[n-1]
+    \end{equation}
+
+    Así formamos un sistema de ecuaciones de diferencias que describe el sistema:
+    \begin{equation}
+        \begin{cases}
+            y[n] = 6x[n] + 3w[n] + 6w[n-1] \\
+            w[n] = x[n] + \frac{1}{3}w[n-1]
+        \end{cases}
+    \end{equation}
+
+    Sin embargo, nosotros queremos una ecuación de diferencias que relacione
+    $y[n]$ con $x[n]$ sin la variable intermedia $w[n]$. En este caso no podemos
+    reemplazar en la primera ecuación el $w[n]$, pues aparece el término $w[n-1]$
+    y el problema no se resuelve.
+    
+    Aplicando transformada Z, desarrollamos para reemplazar $W(z)$:
+    \begin{gather}
+        \begin{cases}
+            Y(z) = 6X(z) + W(z)(3+6z^{-1})  \\
+            W(z) = X(z) + \frac{1}{3}z^{-1}W(z)
+            \longrightarrow W(z) = \frac{X(z)} {1-\frac{1}{3}z^{-1}}
+        \end{cases}\\
+        \qquad\downarrow\nonumber\\
+        \begin{align}
+        Y(z)&=6X(z) + X(z)\frac{3+6z^{-1}}{1-\frac{1}{3}z^{-1}}\\
+        Y(z)\left(1-\frac{1}{3}z^{-1}\right)&=X(z)\left(6-2z^{-1}\right) + X(z)\left(3+6z^{-1}\right)\\
+        Y(z)&=X(z)(9+4z^{-1}) +\frac{1}{3}Y(z)z^{-1}\\
+        &\downarrow \mathcal{Z}^{-1}\notag\\
+        y[n]&=9x[n]+4x[n-1] + \frac{1}{3}y[n-1]
+        \end{align}
+    \end{gather}
+\end{solution}
+
+\part Determine la respuesta a impulso del sistema.
+\begin{solution}
+    A partir del paso (6) de la pregunta anterior:
+    \begin{align}
+        Y(z)&=6X(z) + X(z)\frac{3+6z^{-1}}{1-\frac{1}{3}z^{-1}}\\
+        H(z)&=6 +\frac{3+6z^{-1}}{1-\frac{1}{3}z^{-1}}\\
+        H(z)&=6 -18\frac{-\frac{1}{6}-\frac{1}{3}z^{-1}}{1-\frac{1}{3}z^{-1}}\\
+        H(z)&=6  -18\frac{(1-\frac{1}{3}z^{-1})-\frac{7}{6}}{1-\frac{1}{3}z^{-1}}\\
+        H(z)&=6 - 18 - 18\frac{-\frac{7}{6}}{1-\frac{1}{3}z^{-1}}\\ 
+        H(z)&=-12 +\frac{21}{1-\frac{1}{3}z^{-1}}\\ 
+        &\downarrow \mathcal{Z}^{-1}\notag\\
+        h[n]&= -12\delta[n] + 21\left(\frac{1}{3}\right)^nu[n]
+    \end{align}
+\end{solution}
+
+\end{parts}
+
+\question Considere el sistema tiempo discreto dado por
+$$
+    y[n] = 3\sum_{m=0}^{2}\left(\frac{1}{3}\right)^mx[n-m]
+    + \sum_{m=1}^{3}\left(\frac{1}{2}\right)^my[n-m]
+$$
+Determine y dibuje las siguientes estructuras:
+\begin{parts}
+    \part Forma directa I (normal)
+    \begin{solution}
+        La forma directa I consiste en concatenar la estructura que da los
+        ceros del sistema (términos $x$) y luego la estructura que otorga los polos del sistema (términos $y$).
+        
+        Desarrollando la ecuación de diferencias:
+        \begin{align}
+            \begin{split}
+            y[n]&=3\left(x[n]+\frac{1}{3}x[n-1]+\frac{1}{9}x[n-1]\right)\\
+            &+ \frac{1}{2}y[n-1] +\frac{1}{4}y[n-2] +\frac{1}{8}y[n-3]
+            \end{split}\\\notag\\
+            \begin{split}
+            y[n]&=3x[n]+x[n-1]+\frac{1}{3}x[n-1]\\
+            &+ \frac{1}{2}y[n-1] +\frac{1}{4}y[n-2] +\frac{1}{8}y[n-3]
+            \end{split}
+        \end{align}
+
+        Primero nos ocupamos de la expresión $3x[n]+x[n-1]+\frac{1}{3}x[n-1]$. Dibujando
+        una rama de la cual se extrae la señal $x[n]$ con los retardos que necesitamos: 
+
+        \includegraphics[width=10cm]{imagenes/8.2a.1.png}
+        
+        \pagebreak
+        Se multiplican por los coeficientes de la expresión y se suman (el coeficiente $1$ puede
+        no escribirse explícitamente):\\
+        \includegraphics[width=14cm]{imagenes/8.2a.2.png}
+
+        Luego nos ocupamos de la expresión $\frac{1}{2}y[n-1] +\frac{1}{4}y[n-2] +\frac{1}{8}y[n-3]$.
+        
+        Se extiende la estrucura y se dibuja una rama de
+        donde se extrae la señal $y[n]$ con los retardos necesarios:
+
+        \includegraphics[width=14cm]{imagenes/8.2a.3.png}
+
+        \pagebreak
+        Estos se multiplican por los coeficientes de la expresión y se suman
+        \textbf{hacia atrás}, dando como resultado la estructura que describe
+        el sistema:
+
+        \includegraphics[width=14cm]{imagenes/8.2a.4.png}
+        
+        Observemos que si obtenemos la función de transferencia:
+        \begin{equation}
+            H(z)=\frac{3+z^{-1}+\frac{1}{3}z^{-2}}{1-\frac{1}{2}z^{-1}-\frac{1}{4}z^{-2}-\frac{1}{8}z^{-3}}
+        \end{equation}
+        Se nota que igualmente se puede obtener el diagrama de flujos de señales a
+        partir de ella, fijándonos en el numerador y denominador:
+        \begin{equation}
+            H(z)=\frac{\overbrace{3+z^{-1}+\frac{1}{3}z^{-2}}^{\text{coeficientes para }x[n-d]}}{1\underbrace{-\frac{1}{2}z^{-1}-\frac{1}{4}z^{-2}-\frac{1}{8}z^{-3}}_{\text{coeficientes para y[n-d]}}}
+        \end{equation}
+
+        El exponente de $z$ indica el retardo y el coeficiente que lo acompaña por 
+        cuanto se debe multiplicar. El signo de los coeficientes del denominador se invierte.
+    \end{solution}
+
+        \pagebreak
+    \part Forma directa II (normal)
+    \begin{solution}
+        La forma directa II consiste en invertir el orden en que se realizan
+        las operaciones de la forma directa I.
+
+        Notemos que el sistema se puede escribir como:
+        \begin{align}
+            H(z)&=\frac{3+z^{-1}+\frac{1}{3}z^{-2}}{1-\frac{1}{2}z^{-1}-\frac{1}{4}z^{-2}-\frac{1}{8}z^{-3}}\\
+            &=\left(3+z^{-1}+\frac{1}{3}z^{-2}\right)\cdot\frac{1}{1-\frac{1}{2}z^{-1}-\frac{1}{4}z^{-2}-\frac{1}{8}z^{-3}}\\
+            &=H_1(z)\cdot H_2(z)
+        \end{align}
+
+        Esto se observa en el diagrama de flujos (forma directa I), como dos sistemas
+        en cascada:
+
+        \includegraphics[width=14cm]{imagenes/8.2b.1}
+
+        Como $H_1(z)H_2(z)=H_2(z)H_1(z)$, podemos invertir el orden en que se aplican
+        los sistemas en el diagrama:
+
+        \includegraphics[width=13cm]{imagenes/8.2b.2}\\
+        Al realizar aquello, vemos que esta señal intermedia $w[n]$, se retarda
+        en dos ramas distintas a pesar de que es idéntica. Se pueden combinar estas
+        ramas en una:
+
+        \includegraphics[width=13cm]{imagenes/8.2b.3}
+    \end{solution}
+    \pagebreak
+    \part Forma directa I (transpuesta)
+    \begin{solution}
+        La forma directa I transpuesta, como dice el nombre corresponde a transponer
+        el diagrama de la forma directa I. Recordemos que la forma directa I es:\\
+        \includegraphics[width=14cm]{imagenes/8.2c.1.png}\\
+        Y procedemos a transponer el diagrama. Transponer el diagrama consiste en invertir todas las flechas e intercambiar
+        la entrada y la salida ($x[n]$ e $y[n]$):\\
+        \includegraphics[width=14cm]{imagenes/8.2c.2.png}\\
+        Dando como resultado la forma directa I transpuesta. Si se quiere, se puede
+        reflejar el diagrama como un espejo para que quede la entrada al lado izquierdo
+        y la salida al lado derecho:\\
+        \includegraphics[width=14cm]{imagenes/8.2c.3.png}\\
+    \end{solution}
+    \part Forma directa II (transpuesta)
+    \begin{solution}
+        La forma directa II transpuesta se puede obtener:
+        \begin{itemize}
+            \item Transponiendo la forma directa II normal
+            \item Invirtiendo el orden de aplicación de la forma directa I transpuesta.
+        \end{itemize}
+        
+        \pagebreak
+        Partiendo de la forma directa I transpuesta:\\
+        \includegraphics[width=14cm]{imagenes/8.2d.1.png}\\
+
+        Si invertimos el orden en que se aplican los sistemas:\\
+        \includegraphics[width=14cm]{imagenes/8.2d.2.png}\\
+
+        Esta estructura representa la expresión
+        \begin{align}
+            Y(z)=3X(z) + X(z)z^{-1} + \frac{1}{3}X(z)z^{-1} + \frac{1}{2}Y(z)z^{-1}+ \frac{1}{4}Y(z)z^{-2}+ \frac{1}{8}Y(z)z^{-3}
+        \end{align}
+        Que es equivalente a:
+        \begin{align}
+            Y(z)=3X(z) + \left(X(z)+\frac{1}{2}Y(z)\right)z^{-1} + \left(\frac{1}{3}X(z)+\frac{1}{4}Y(z)\right)z^{-2} + \frac{1}{8}Y(z)z^{-3}
+        \end{align}
+        Es decir, podemos unir la estructura por la rama del medio:\\
+        \includegraphics[width=14cm]{imagenes/8.2d.3.png}\\
+
+        Es relativamente sencillo observar que se puede llegar a este diagrama
+        directamente de la función de transferencia o ecuación de diferencias
+        \begin{equation}
+            H(z)=\frac{\overbrace{3+z^{-1}+\frac{1}{3}z^{-2}}^{\text{coeficientes para }x[n-d]}}{1\underbrace{-\frac{1}{2}z^{-1}-\frac{1}{4}z^{-2}-\frac{1}{8}z^{-3}}_{\text{coeficientes para y[n-d]}}}
+        \end{equation}
+
+        De hecho este diagrama es muy similar a la forma directa I, con la diferencia
+        de que aquí se toman las señales $x[n]$ e $y[n]$, se multiplican, se suman,
+        y luego se aplican los retardos correspondientes.
+
+    \end{solution}
+\end{parts}
+
+\pagebreak
+\question Un sistema FIR esta dado por
+$$
+    H(z) = 1 + 1.61z^{-1} + 1.74z^{-2} + 1.61z^{-3} + z^{-4}
+$$
+Determine y dibuje las siguientes estructuras:
+\begin{parts}
+    \part Forma cascada (utilice el comando \texttt{tf2sos} para hallar los
+    coeficientes de segundo orden).
+    \begin{solution}\\
+        Ingresando el sistema a Matlab como numerador y denominador
+        \begin{equation}
+            H(z) = \frac{1 + 1.61z^{-1} + 1.74z^{-2} + 1.61z^{-3} + z^{-4}}{1}
+        \end{equation}
+        y aplicando \texttt{tf2sos}:
+
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 3 (a)
+
+b = [1, 1.61, 1.74, 1.61, 1];
+a = [1];
+
+sos = tf2sos(b, a)
+        \end{minted}
+        Se obtiene:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+sos =
+
+    1.0000   -0.1479    1.0000    1.0000         0         0
+    1.0000    1.7579    1.0000    1.0000         0         0 
+        \end{minted}
+        La matriz \texttt{sos} representa una factorización del sistema original
+        en dos sistemas de segundo orden. Las primeras tres columnas representan los numeradores,
+        y las últimas tres los denominadores:
+
+        \begin{align}    
+            H(z) &= 1 + 1.61z^{-1} + 1.74z^{-2} + 1.61z^{-3} + z^{-4}\\
+            &=\frac{1-0.14z^{-1}+z^{-2}}{1+0z^{-1}+0z^{-2}}\cdot\frac{1+1.75z^{-1}+z^{-2}}{1+0z^{-1}+0z^{-2}}\\
+            &=\left(1-0.14z^{-1}+z^{-2}\right)\left(1+1.75z^{-1}+z^{-2}\right)
+        \end{align}
+        Dibujando estos dos sistemas obtenemos:\\
+        \includegraphics[width=14cm]{imagenes/8.3a.1.png}
+
+        Concatenándolos uno tras otro obtenemos el diagrama de flujos en forma
+        cascada que implementa el sistema completo:\\
+        \includegraphics[width=14cm]{imagenes/8.3a.2.png}
+        
+    \end{solution}
+    \part Forma fase lineal
+    \begin{solution}
+        Dado que tenemos un sistema de fase lineal con
+        \begin{align}
+            H(z) &= 1 + 1.61z^{-1} + 1.74z^{-2} + 1.61z^{-3} + z^{-4}\\
+            &\downarrow\mathcal{Z}^{-1}\notag\\
+            h[n] &= \delta[n] + 1.61\delta[n-1] + 1.74\delta[n-2] + 1.61\delta[n-3] + \delta[n-4]
+        \end{align}
+        Es decir, $h[n]=h[4-n]$ ($0\leq n \leq 4$), podemos dibujar una estructura en forma fase
+        lineal.
+
+        Observemos que:
+        \begin{align}
+            H(z) &= 1 + 1.61z^{-1} + 1.74z^{-2} + 1.61z^{-3} + z^{-4}\\
+               \frac{Y(z)}{X(z)} &= (1+z^{-4}) + 1.61(z^{-1} +z^{-3})+ 1.74z^{-2}
+        \end{align}
+        Pasándolo a ecuación de diferencias:
+        \begin{equation}
+            y[n]=(1)\left(x[n]+x[n-4]\right) + 1.61\left(x[n-1]+x[n-3]\right) + 1.74x[n-2]
+        \end{equation}
+        Esta es nuestra guía para dibujar el diagrama. Comenzamos sumando lo indicado
+        entre paréntesis:\\
+        \includegraphics[width=14cm]{imagenes/8.3b.1.png}
+
+        Y posteriormente multiplicamos cada suma por su coeficiente correspondiente, y los
+        sumamos:\\
+        \includegraphics[width=14cm]{imagenes/8.3b.2.png}
+    \end{solution}
+\end{parts}
+
+\question Un sistema IIR viene dado por:
+$$
+    H(z) = \frac{3.96 + 6.36z^{-1} + 8.3z^{-2} + 4.38z^{-3} + 2.07z^{-4}}
+        {1 +0.39z^{-1} -0.93z^{-2} -0.33z^{-3} +0.34z^{-4}}
+$$
+Utilizando Matlab determine:
+\begin{parts}
+\part Una estructura en forma paralela
+\begin{solution}
+    Se utiliza el comando \texttt{residuez}. Al aplicarlo sobre el sistema:
+
+    \begin{minted}[fontsize=\footnotesize]{matlab}
+b = [3.96, 6.36, 8.3, 4.38, 2.07];
+a = [1, 0.39, -0.93, -0.33, 0.34];
+
+[R, p, C] = residuez(b, a)
+    \end{minted}
+
+    Se obtiene:
+    \begin{minted}[fontsize=\footnotesize]{matlab}
+R =
+
+  -0.0252 + 1.6371i
+  -0.0252 - 1.6371i
+  -1.0389 -40.5443i
+  -1.0389 +40.5443i
+
+
+p =
+
+  -0.8384 + 0.3211i
+  -0.8384 - 0.3211i
+   0.6434 + 0.0883i
+   0.6434 - 0.0883i
+
+
+C =
+
+    6.0882
+    \end{minted}
+    Donde:
+    \begin{align}
+    H(z) &= \frac{3.96 + 6.36z^{-1} + 8.3z^{-2} + 4.38z^{-3} + 2.07z^{-4}}
+        {1 +0.39z^{-1} -0.93z^{-2} -0.33z^{-3} +0.34z^{-4}}\\
+        &\downarrow\texttt{residuez()}\notag\\
+        &=\frac{R_1}{1-p_1z^{-1}}+\frac{R_2}{1-p_2z^{-1}}+\frac{R_3}{1-p_3z^{-1}}+\frac{R_4}{1-p_4z^{-1}}+C\\
+        &=\frac{R_1}{1-p_1z^{-1}}+\frac{\overline{R_1}}{1-\overline{p_1}z^{-1}}+\frac{R_3}{1-p_3z^{-1}}+\frac{\overline{R_3}}{1-\overline{p_3}z^{-1}}+6.08
+    \end{align}
+
+    Si bien a partir de esta expresión podríamos dibujar el diagrama en forma paralela,
+    es conveniente expresarlo en téminos de segundo orden para evitar matemáticas
+    complejas en el diagrama. Sumando los pares conjugados obtenemos los sistemas
+    de segundo orden con coeficientes reales.
+    
+    Esto se puede realizar utilizando el mismo comando \texttt{residuez}. Emparejando
+    los términos correspondientes:
+    \begin{equation}
+        H(z)=\underbrace{\frac{R_1}{1-p_1z^{-1}}+\frac{\overline{R_1}}{1-\overline{p_1}z^{-1}}}_{\texttt{R(1:2), p(1:2)}}
+        +\underbrace{\frac{R_3}{1-p_3z^{-1}}+\frac{\overline{R_3}}{1-\overline{p_3}z^{-1}}}_{\texttt{R(3:4), p(3:4)}}+6.08
+    \end{equation}
+
+    Se ingresan a matlab:
+    \begin{minted}[fontsize=\footnotesize]{matlab}
+[B1, A1] = residuez(R(1:2), p(1:2), [])
+[B2, A2] = residuez(R(3:4), p(3:4), [])
+
+B1 =
+
+  -0.0504 + 0.0000i  -1.0937 + 0.0000i
+
+
+A1 =
+
+    1.0000    1.6769    0.8061
+
+
+B2 =
+
+   -2.0778    8.4985
+
+
+A2 =
+
+    1.0000   -1.2869    0.4218
+    \end{minted}
+
+    Es decir:
+    \begin{equation}
+        H(z)=\frac{-0.05-1.09z^{-1}}{1+1.67z^{-1}+0.80z^{-2}}
+        +\frac{-2.07+8.49z^{-1}}{1-1.28z^{-1}+0.42z^{-2}} 
+        +6.08
+    \end{equation}
+
+    Y dibujamos el diagrama de cada uno de los términos.
+
+    Para $6.08$:\\
+    \includegraphics[width=10cm]{imagenes/8.4a.1.png}
+
+    Para $\frac{-0.05-1.09z^{-1}}{1+1.67z^{-1}+0.80z^{-2}}$:\\
+    \includegraphics[width=10cm]{imagenes/8.4a.2.png}
+
+    Para $\frac{-2.07+8.49z^{-1}}{1-1.28z^{-1}+0.42z^{-2}}$:\\
+    \includegraphics[width=10cm]{imagenes/8.4a.3.png}
+
+    Finalmente se unen todos en paralelo y se suman:\\
+    \includegraphics[width=10cm]{imagenes/8.4a.4.png}
+    
+    
+\end{solution}
+
+\part Una estructura en forma cascada
+\begin{solution}
+    Se ingresa la función de transferencia a Matlab y se usa el comando \texttt{tf2sos}:
+    \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 4 (b) 
+
+b = [3.96, 6.36, 8.3, 4.38, 2.07];
+a = [1, 0.39, -0.93, -0.33, 0.34];
+
+sos = tf2sos(b, a)
+
+sos =
+
+    3.9600    2.2107    2.1236    1.0000   -1.2869    0.4218
+    1.0000    1.0478    0.9748    1.0000    1.6769    0.8061
+    \end{minted}
+    
+    La matriz respresenta una factorización de la función de transferencia en
+    sistemas de segundo orden. Cada fila es un factor. Las tres primeras columnas
+    corresponden a los numeradores y las últimas tres a los denominadores.
+    Así:
+    \begin{align}
+    H(z) &= \frac{3.96 + 6.36z^{-1} + 8.3z^{-2} + 4.38z^{-3} + 2.07z^{-4}}
+        {1 +0.39z^{-1} -0.93z^{-2} -0.33z^{-3} +0.34z^{-4}}\\
+        &=\frac{3.96+2.21z^{-1}+2.12z^{-2}}{1-1.29z^{-1}+0.42z^{-2}}
+        \cdot\frac{1+1.05z^{-1}+0.97z^{-2}}{1+1.68z^{-1}+0.81z^{-2}}
+    \end{align}
+
+    Dibujando el diagrama de cada factor (forma directa II transpuesta):\\
+    Para $\frac{3.96+2.21z^{-1}+2.12z^{-2}}{1-1.29z^{-1}+0.42z^{-2}}$:\\
+    \includegraphics[width=14cm]{imagenes/8.4b.1.png}\\
+    
+    \pagebreak
+    Y para $\frac{3.96+2.21z^{-1}+2.12z^{-2}}{1-1.29z^{-1}+0.42z^{-2}}$:\\
+    \includegraphics[width=14cm]{imagenes/8.4b.2.png}\\
+
+    Al concatenar ambos se obtiene el diagrama de la estructura completa:\\
+    \includegraphics[width=14cm]{imagenes/8.4b.3.png}\\
+
+    
+\end{solution}
+
+\end{parts}
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

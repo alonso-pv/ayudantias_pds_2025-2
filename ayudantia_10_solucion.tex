@@ -1,0 +1,384 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 10 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question Considere el filtro FIR con respuesta a impulso $h[n]=u[n]-u[n-4]$.
+\begin{parts}
+    \part Determine el tipo de filtro FIR (I, II, III o IV)
+    \begin{solution}
+        La respuesta a impulso puede ser reescrite como $h[n]=\{1,\;1,\;1,\;1\}$.
+        Dado que es simétrica ($h[n]=h[M-n]$) y de orden par ($M=3$), se trata de
+        un filtro FIR tipo II. 
+    \end{solution}
+
+    \part Determine y bosqueje la respuesta de magnitud $|H(e^{j\omega})|$
+    \begin{solution}
+        De la respuesta a impulso:
+            \begin{align}
+                h[n]&=u[n]-u[n-4]\\
+                &\downarrow\mathcal{Z}\notag\\ 
+                H(z)&=\frac{1}{1-z^{-1}}-z^{-4}\frac{1}{1-z^{-1}}\\
+                &=\frac{1-z^{-4}}{1-z^{-1}}\\
+                &\downarrow z=e^{j\omega}\notag\\ 
+                H(e^{j\omega})&=\frac{1-e^{-4j\omega}}{1-e^{-j\omega}}
+            \end{align}
+            Bosquejar la magnitud a partir de esta expresión es complicado. Factorizando
+            numerador y denominador por exponenciales complejas:
+            \begin{align}
+                H(e^{j\omega})&=\frac{1-e^{-4j\omega}}{1-e^{-j\omega}}\\
+                &=\frac{e^{2j\omega}-e^{-2j\omega}}{e^{j\omega/2}-e^{-j\omega/2}}\left(\frac{e^{-2j\omega}}{e^{-j\omega/2}}\right)
+            \end{align} 
+            Usando $e^{j\theta}-e^{-j\theta}=2j\sin(\theta)$:
+            \begin{align}
+                H(e^{j\omega})&=\frac{e^{2j\omega}-e^{-2j\omega}}{e^{j\omega/2}-e^{-j\omega/2}}\left(\frac{e^{-2j\omega}}{e^{-j\omega/2}}\right)\\
+                &=\frac{2j\sin(2\omega)}{2j\sin(\omega/2)}e^{-\frac{3}{2}j\omega}\\
+                &=\frac{\sin(2\omega)}{\sin(\omega/2)}e^{-\frac{3}{2}j\omega}\\
+                &\downarrow |\cdot|\notag\\
+                |H(e^{j\omega})|&=\left|\frac{\sin(2\omega)}{\sin(\omega/2)}\right|\left|e^{-\frac{3}{2}j\omega}\right|\\
+                &=\left|\frac{\sin(2\omega)}{\sin(\omega/2)}\right|
+            \end{align}
+            Evaluando la expresión se obtienen valores para el bosquejo (para el caso $\omega=0$ se
+            usa el límite):
+            \begin{flalign}
+                \omega&=0 & \omega&=\pm\pi/2 & \omega&=\pm\pi
+                \\
+                \left|\frac{\sin(2\omega)}{\sin(\omega/2)}\right|&\approx\left|\frac{2\omega}{\omega/2}\right|
+                & \left|\frac{\sin(2\omega)}{\sin(\omega/2)}\right|&=\left|\frac{\sin(\pm\pi)}{\sin(\pm\pi/4)}\right|
+                & \left|\frac{\sin(2\omega)}{\sin(\omega/2)}\right|&=\left|\frac{\sin(\pm2\pi)}{\sin(\pm\pi/2)}\right|
+                \\
+                &=|4|
+                & &=\left|\frac{0}{\sin(\pm\pi/4)}\right|
+                & &=\left|\frac{0}{\sin(\pm\pi/2)}\right|
+                \\
+                &=4
+                & &=0
+                & &=0
+            \end{flalign}
+            La respuesta de magnitud tiene un lóbulo principal entre $[-\pi/2,\;\pi/2]$, y
+            dos lóbulos más pequeños entre $[-\pi,\;-\pi/2]$, y $[\pi/2,\;\pi$]:\\
+            \includegraphics[width=14cm]{imagenes/10.1b.png}
+    \end{solution}
+
+    \part Determine y bosqueje la respuesta de amplitud $A(e^{j\omega})$
+    \begin{solution}
+        A partir de la expresión de la respuesta en frecuencia hallada en el punto
+        anterior, se deduce la respuesta de amplitud $A(e^{j\omega})$:
+        \begin{gather}
+                H(e^{j\omega})=\frac{\sin(2\omega)}{\sin(\omega/2)}e^{-\frac{3}{2}j\omega}=A(e^{j\omega})e^{j\Psi(\omega)}\\
+                \downarrow\notag\\
+                A(e^{j\omega})=\frac{\sin(2\omega)}{\sin(\omega/2)}
+        \end{gather}
+        Como $|A(e^j{\omega})|=|H(e^{j\omega})|$, los ceros que se vieron en el punto anterior
+        se vuelven a utilizar para el bosquejo. Para dibujar los lóbulos se debe tener en cuenta
+        el signo de la expresión:
+        \begin{flalign}
+            &-\pi<\omega<-\pi/2 & &-\pi/2<\omega<0 & &0<\omega<\pi/2 & &\pi/2<\omega<\pi\\
+            %&\sin(2\omega)>0 & &\sin(2\omega)<0 & &\sin(2\omega)>0 & &\sin(2\omega)<0\\
+            %&\sin(\omega/2)<0 & &\sin(\omega/2)<0 & &\sin(\omega/2)>0 & &\sin(\omega/2)>0\\
+            &\frac{\sin(2\omega)}{\sin(\omega/2)}<0 & &\frac{\sin(2\omega)}{\sin(\omega/2)}>0 & &\frac{\sin(2\omega)}{\sin(\omega/2)}>0 & &\frac{\sin(2\omega)}{\sin(\omega/2)}<0 
+        \end{flalign}
+        \includegraphics[width=14cm]{imagenes/10.1c.png}
+    \end{solution}
+
+    \part Determine y bosqueje la respuesta de fase $\angle H(e^{j\omega})$
+    \begin{solution}
+        Tenemos que:
+        \begin{align}
+            \angle H(e^{j\omega})&=\angle\left(\frac{\sin(2\omega)}{\sin(\omega/2)}e^{-\frac{3}{2}j\omega}\right)\\
+            &=\angle\left(\frac{\sin(2\omega)}{\sin(\omega/2)}\right) -\frac{3}{2}\omega
+        \end{align}
+        Cuando $\frac{\sin(2\omega)}{\sin(\omega/2)}<0$, su fase toma el valor $\pm\pi$:
+        \begin{equation}
+            \angle H(e^{j\omega})=\begin{cases}
+                -\pi-\frac{3}{2}\omega & -\pi<\omega<-\frac{\pi}{2}\\
+                -\frac{3}{2}\omega & -\frac{\pi}{2}<\omega<\frac{\pi}{2}\\
+                \pi-\frac{3}{2}\omega & \frac{\pi}{2}<\omega<\pi\\
+            \end{cases}
+        \end{equation}
+        \includegraphics[width=14cm]{imagenes/10.1d.png}
+    \end{solution}
+
+    \part Determine y bosqueje la respuesta de ángulo $\Psi(\omega)$
+    \begin{solution}
+        La respuesta de ángulo $\Psi(\omega)$ se deduce de $H(e^{j\omega})$:
+        \begin{gather}
+                H(e^{j\omega})=\frac{\sin(2\omega)}{\sin(\omega/2)}e^{-\frac{3}{2}j\omega}=A(e^{j\omega})e^{j\Psi(\omega)}\\
+                \downarrow\notag\\
+                \Psi(\omega)=-\frac{3}{2}\omega
+        \end{gather}
+        \includegraphics[width=14cm]{imagenes/10.1e.png}
+    \end{solution}
+\end{parts}
+
+\question Se requiere un filtro digital pasa-alto para procesar una señal de sonido:
+\begin{itemize}
+    \item La señal se muestrea a 48 kHz.
+    \item Frecuencia borde de la banda de rechazo: $F_s=10.8$ kHz
+    \item Frecuencia borde de la banda de paso: $F_p=12$ kHz
+    \item Atenuación de banda de rechazo $A_s=42$ dB
+    \item Ripple en banda de paso $A_p=0.2$ dB
+\end{itemize}
+    \includegraphics[width=15cm]{imagenes/9.p3.png}\\
+
+\begin{parts}
+    \part Determine las especificaciones absolutas $\delta_s$ y $\delta_p$, y las
+    frecuencias normalizadas $\omega_s$ y $\omega_p$ para el diseño del filtro.\label{preg:2a}
+    \begin{solution}
+        Para convertir de especificaciones relativas a absolutas usamos:
+        \begin{align}
+            \delta_p&=\frac{10^{A_p/20}-1}{10^{A_p/20}+1} &
+            \delta_s&=\frac{1+\delta_p}{10^{A_s/20}}
+        \end{align}
+
+        Reemplazando por los datos se obtiene:
+        \begin{align}
+            \delta_p&=\frac{10^{0.2/20}-1}{10^{0.2/20}+1} &
+            \delta_s&=\frac{1+0.0115}{10^{42/20}}\\
+            &=0.0115 & &=0.0080
+        \end{align}
+
+        Se convierte de las frecuencias en Hz, a frecuencia normalizada usando $\omega=2\pi\frac{F}{F_m}$:
+        \begin{align}
+            \omega_s&=2\pi\frac{F_s}{F_m} & \omega_p&=2\pi\frac{F_p}{F_m}\\
+            &=2\pi\frac{10.8}{48} & &=2\pi\frac{12}{48}\\
+            &=0.45\pi & &=0.5\pi
+        \end{align}
+    \end{solution}
+
+    \part Determine la respuesta a impulso ideal para el diseño de un filtro FIR
+    por medio de ventana.
+    \begin{solution}
+        \paragraph{Filtro pasa-bajo}
+        Recordando que
+        \begin{align}
+            &H_{LP}(e^{j\omega})=\begin{cases}
+                e^{-j\alpha\omega} & |\omega| < \omega_c\\
+                0 & \omega_c < |\omega| <\pi
+            \end{cases} & &\longleftrightarrow &
+            &h_{LP}[n]=\frac{\sin(\omega_c[n-\alpha])}{\pi[n-\alpha]}
+        \end{align}
+        Es la respuesta de un filtro pasa-bajo ideal y su respuesta a impulso. Se deducen las
+        las respuestas a impulso de otros tipos de filtro.
+        \paragraph{Filtro pasa-banda}
+        Un filtro pasa banda ideal con frecuencias de corte $\omega_{c1}$ y $\omega_{c2}$, se
+        obtiene restando dos pasabajos:
+        \begin{align}
+            &H_{BP}(e^{j\omega})=\begin{cases}
+                0 & |\omega| <\omega_{c1}\\
+                e^{-j\alpha\omega} & \omega_{c1} < |\omega| < \omega_{c2}\\
+                0 & \omega_{c2} < |\omega| <\pi
+            \end{cases} & &\longleftrightarrow &
+            &\begin{split}
+                h_{BP}[n]=\frac{\sin(\omega_{c2}[n-\alpha])}{\pi[n-\alpha]}\\
+                -\frac{\sin(\omega_{c1}[n-\alpha])}{\pi[n-\alpha]}
+            \end{split}
+        \end{align}
+        
+        \paragraph{Filtro pasa-alto} Un filtro pasa-alto con frecuencia de corte $\omega_c$
+        se obtiene restando un pasa-bajos de un impulso:
+         \begin{align}
+            &H_{HP}(e^{j\omega})=\begin{cases}
+                0 & |\omega| < \omega_c\\
+                e^{-j\alpha\omega} &  \omega_c < |\omega|
+            \end{cases} & &\longleftrightarrow &
+            &h_{HP}[n]=\delta[n-\alpha]-\frac{\sin(\omega_c[n-\alpha])}{\pi[n-\alpha]}
+        \end{align}
+
+        Para el diseño del filtro, escogemos la frecuencia de corte $\omega_c$
+        en el punto medio de la banda de transición $[\omega_s,\;\omega_p]$:
+        \begin{equation}
+            \omega_c = \frac{\omega_s+\omega_p}{2}=\frac{0.45\pi+0.5\pi}{2}
+            =0.475\pi
+        \end{equation}
+        La respuesta a impulso ideal a utilizar para el filtro FIR de orden $M$
+        (por definir) es:
+        \begin{align}
+            h_{HP}[n]=\delta[n-M/2]-\frac{\sin(0.475\pi[n-M/2])}{\pi[n-M/2]}
+        \end{align}
+    \end{solution}
+
+    \part Escoja una ventana apropiada de la tabla y utilice esta para determinar el filtro
+    FIR en Matlab.
+    \begin{solution}
+        \paragraph{Selección de ventana}
+        Considerando las especificaciones calculadas en (\ref{preg:2a}):
+        \begin{align*}
+            &\delta_s=0.0080 &
+            &\delta_p=0.0115 &
+            &\omega_s=0.45 &
+            &\omega_p=0.5
+        \end{align*}
+        Obtenemos un ripple mínimo y lo convertimos a atenuación en dB para la
+        elección de la ventana:
+        \begin{align}
+            \delta &=\min\{\delta_s,\; \delta_p\} &
+            A&=-20\log(0.0080)\\
+            &=0.0080 &
+            &=42\text{ dB}
+        \end{align}
+        De la columna ``$A_s$ (\textbf{dB})'' de la tabla escogemos la ventana.
+        Con $A=42 < 44$ dB, se escoge la ventana de Hann.
+
+        \paragraph{Selección de orden $M$} Para hallar el orden $M=L-1$ se iguala la
+        banda de transición requerida ($\Delta\omega=\omega_p-\omega_s=0.05\pi$)
+        con la banda producida por la ventana escogida (columna \textbf{Exact}
+        $\Delta\omega$ de la tabla). Para la ventana Hann.
+        
+        Así, tenemos:
+        \begin{align}
+            \Delta\omega=0.05\pi=\frac{6.2\pi}{L} \longrightarrow M=L-1=123 
+        \end{align}
+
+        \paragraph{Ajuste de $M$} Al tener $M=123$ \textbf{impar}, aplicar la
+        ventana produce un filtro \textbf{FIR tipo II}. Este tipo de filtro tiene
+        la restricción $\left.H(e^{j\omega})\right|_{\omega=\pi}=0$. Esto es malo
+        considerando que diseñamos un pasa-alto.
+
+        Por esta razón, aumentamos en 1 el orden para obtener $M=124$ \textbf{par},
+        que produce un filtro \textbf{FIR tipo I}, que no tiene esta restricción.
+
+        \paragraph{Respuesta a impulso final} Considerando lo anterior, la
+        respuesta a impulso del filtro FIR queda como:
+        \begin{align}
+            h[n]&=h_{HP}[n]\cdot w_{\text{Hann}}[n]    \\
+            &=\left(\delta[n-62]-\frac{\sin(0.475\pi[n-62])}{\pi[n-62]}\right)
+            w_{\text{Hann}}[n]
+        \end{align}
+        Con\begin{equation}
+            w_{\text{Hann}}[n]=\begin{cases}
+                0.5-0.5\cos\left(2\pi n/M\right) & 0\leq n \leq M=124 \\
+                0 & \text{otro valor}
+            \end{cases}
+        \end{equation}
+
+        Esto se puede realizar de forma manual en Matlab, o bien, utilizando la
+        función \texttt{fir1} de Matlab:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+M = 124;
+wc = 0.475*pi;
+
+% Forma manual
+n=0:M;
+h_ideal = -sin(wc*(n-M/2))./(pi* (n-M/2));
+%h_ideal = sin(pi*(n-M/2))./(pi* (n-M/2))-sin(wc*(n-M/2))./(pi* (n-M/2));
+h_ideal(isnan(h_ideal)) = -wc/pi;
+h_ideal(M/2+1) = h_ideal(M/2+1) + 1; % M/2+1 porque matlab indexa desde uno.
+
+h_HP = h_ideal.*hann(M+1)';
+
+% Usando fir1
+h_fir1 = fir1(M,wc/pi,"high",hann(M+1));
+        \end{minted}
+
+        Al graficar respuesta a impulso y magnitud:\\
+        \includegraphics[width=14cm]{imagenes/10.2c.png}
+    \end{solution}
+
+    \part Compruebe el filtro en Matlab con una señal de prueba
+    $\cos(2\pi F_1 t) + \sin(2\pi F_2 t)$. (Con $F_1=16 \text{kHz}$, $F_2=8$ kHz)
+    \begin{solution}
+        Al testear el filtro con la señal de prueba, vemos como la componente de $8$ kHz
+        se reduce en amplitud, siendo imperceptible en la señal filtrada. La otra
+        componente se mantiene prácticamente intacta.
+
+        Para la señal original y filtrada, se grafica la forma de onda y transformada
+        de Fourier (aproximada):\\
+        \includegraphics[width=14cm]{imagenes/10.2d.png}
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 2 (d)
+
+F1 = 16000; F2 = 8000;
+% Señal continua
+x_cont = @(t) cos(2*pi*F1*t) + sin(2*pi*F2*t);
+
+% Muestreo
+Fm = 48000; % Frec. muestreo
+T = 1/Fm;
+nT = 0:T:0.1;
+x_muestreada = x_cont(nT);
+
+x_filtrada = filter(h_HP, 1, x_muestreada);
+
+% Aproximacion de TFTC
+f_m = abs(fftshift(fft(x_muestreada)*T));
+f_f = abs(fftshift(fft(x_filtrada)*T));
+
+% % Ploteamos una porción de la señal
+n = 0:1000;
+x_muestreada = x_muestreada(n+1);
+x_filtrada = x_filtrada(n+1);
+
+x_m_dac = interp(x_muestreada, 10);
+x_f_dac = interp(x_filtrada, 10);
+n_dac = (0:length(x_m_dac)-1) / 10; 
+
+% ploteo fourier
+N = length(f_m);
+F = (-N/2:N/2-1)*(1/(N*T));
+
+figure;
+% Ploteo de la señal filtrada
+subplot(2,2,1)
+stem(n*T, x_muestreada, 'filled', 'LineWidth', 2); hold on
+plot(n_dac*T, x_m_dac, '--', Linewidth=1.5)
+xlim([0.01 0.0103])
+xlabel("Tiempo (s)")
+ylabel("Amplitud")
+title("Señal original")
+
+subplot(2,2,2)
+plot(F, f_m, LineWidth=2)
+title("Transformada de Fourier (aprox.) de la señal original")
+xlabel("F")
+ylabel("X(2{\pi}F)")
+xticks([-16 -8 8 16]*1000)
+xticklabels(["-16 kHz" "-8 kHz" "8 kHz" "16 kHz"])
+
+subplot(2,2,3)
+stem(n*T, x_filtrada,'filled', LineWidth=2); hold on
+plot(n_dac*T, x_f_dac, '--', Linewidth=1.5)
+xlim([0.01 0.0103])
+xlabel("Tiempo (s)")
+ylabel("Amplitud")
+title('Señal filtrada')
+
+subplot(2,2,4)
+plot(F, f_f, LineWidth=2)
+title("Transformada de Fourier (aprox.) de la señal filtrada")
+xlabel("F")
+ylabel("X(2{\pi}F)")
+xticks([-16 -8 8 16]*1000)
+xticklabels(["-16 kHz" "-8 kHz" "8 kHz" "16 kHz"])
+        \end{minted}
+    \end{solution}
+\end{parts}
+
+
+
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

@@ -159,35 +159,464 @@ Sea la secuencia $x[n]=\{1\;1\;0\;3\}$
 
     \part Realice la convolución circular $x[n]\circledast h[n]$, con $h[n]=\{1\;0\;1\;0\}$
     en el plano temporal.
+    \begin{solution}
+        La convolución circular se define por:
+        \begin{align}
+            y[n]=x[n]\circledast h[n]&=\sum_{m=0}^{N-1}h[n]x[\langle n-m\rangle_N]\\
+            &=\sum_{m=0}^{3}h[n]x[\langle n-m\rangle_4]
+        \end{align}
+
+        Lo que se puede expresar en forma matricial:
+        \begin{align}
+            \begin{bmatrix}
+                y[0]\\ y[1]\\ y[2]\\ y[3]
+            \end{bmatrix}
+            &=\begin{bmatrix}
+                x[0] & x[3] & x[2] & x[1] \\ 
+                x[1] & x[0] & x[3] & x[2] \\ 
+                x[2] & x[1] & x[0] & x[3] \\ 
+                x[3] & x[2] & x[1] & x[0]
+            \end{bmatrix}
+            \begin{bmatrix}
+                h[0]\\ h[1]\\ h[2]\\ h[3]
+            \end{bmatrix}\\
+            &=\begin{bmatrix}
+               1 & 3 & 0 & 1 \\ 
+               1 & 1 & 3 & 0 \\ 
+               0 & 1 & 1 & 3 \\ 
+               3 & 0 & 1 & 1 
+            \end{bmatrix}
+            \begin{bmatrix}
+                1 \\ 0 \\ 1 \\ 0
+            \end{bmatrix}
+            =\begin{bmatrix}
+               1 \\ 1+3 \\ 1 \\ 3+1 
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1 \\ 4 \\ 1 \\ 4
+            \end{bmatrix}
+        \end{align}
+
+        Por lo tanto: $y[n]= \{1\;4\;1\;4\}$
+
+    \end{solution}
 
     \part Repita (c) usando las TFD $X[k]$ y $H[k]$.
+    \begin{solution}
+        Del ejercicio 1(a): $X[k]=\{5\quad {1+2j}\quad-3\quad1-2j\}$. $H[k]$ se 
+        puede obtener de forma similar con la matriz $\bm{W_4}$ y un vector $\bm{h}$:
+        \begin{gather}
+            \bm{H}=\bm{W_4h}\\
+            \begin{align}
+            \begin{bmatrix}
+                H[0]\\ H[1]\\ H[2]\\ H[3] 
+            \end{bmatrix}
+            &=\begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & -j & -1 & j \\
+                1 & -1 & 1 & -1 \\
+                1 & j & -1 & -j \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                h[0]\\  h[1]\\  h[2]\\  h[3]
+            \end{bmatrix}\\
+            &=\begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & -j & -1 & j \\
+                1 & -1 & 1 & -1 \\
+                1 & j & -1 & -j \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                1\\  0\\  1\\  0
+            \end{bmatrix}
+            =\begin{bmatrix}
+                1+1\\1-1\\1+1\\1-1
+            \end{bmatrix}
+            =\begin{bmatrix}
+                2\\0\\2\\0
+            \end{bmatrix}
+        \end{align}
+        \end{gather}
+        Es decir: $H[k]=\{2\;0\;2\;0\}$.
+
+    Luego aplicamos la propiedad que relaciona la convolución cíclica con la TFD:
+    \begin{align}
+        \boxed{y[n]=x[n]\circledast h[n]\stackrel{TFD}{\longleftrightarrow}Y[k]=X[k]H[k]}
+    \end{align}
+    Es decir, multiplicando las transformadas y aplicando la TFDI a $Y[k]$ obtenemos $y[n]$.
+    La transformada $Y[k]$ es:
+    \begin{align}
+       X[k]&=\{5\quad 1+2j\quad -3\quad 1-2j\}\nonumber\\
+       H[k]&=\{2\quad 0\quad 2\quad 0\}\notag\\
+       Y[k]=X[k]H[k]&=\{10\quad0\quad -6\quad0\}
+    \end{align}
+    
+    Aplicamos la transformada inversa. Matricialmente:
+    \begin{align}
+        \bm{y}=\bm{W_4^{-1}Y}
+    \end{align}
+
+    Recordando que en general $\bm{W_N^{-1}}={1 \over N}\bm{W_N^*}$, tenemos:
+    \begin{gather}
+        \begin{align}
+        \bm{y}&=\bm{W_4^{-1}Y}\\
+        &=\frac{1}{4}\bm{W_4^*Y}
+        \end{align}\\
+        \begin{align}
+        \begin{bmatrix}
+            y[0]\\ y[1]\\ y[2]\\ y[3]
+        \end{bmatrix}
+        &=\frac{1}{4}
+        \begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & -j & -1 & j \\
+                1 & -1 & 1 & -1 \\
+                1 & j & -1 & -j \\
+        \end{bmatrix}^*
+        \begin{bmatrix}
+            Y[0]\\ Y[1]\\ Y[2]\\ Y[3]
+        \end{bmatrix}\\
+        &=\frac{1}{4}
+        \begin{bmatrix}
+                1 & 1 & 1 & 1\\
+                1 & j & -1 & -j \\
+                1 & -1 & 1 & -1 \\
+                1 & -j & -1 & j \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            10\\ 0\\ -6\\ 0
+        \end{bmatrix}\\
+        &=\frac{1}{4}\begin{bmatrix}
+            10-6\\10+6\\10-6\\10+6
+        \end{bmatrix}
+        =\frac{1}{4}\begin{bmatrix}
+            4\\16\\4\\16
+        \end{bmatrix}
+        =\begin{bmatrix}
+           1\\4\\1\\4 
+        \end{bmatrix}
+        \end{align}
+    \end{gather}
+    Es decir: $y[n]=\{1\;4\;1\;4\}$. Coincide con la convolución en el tiempo.
+    \end{solution}
 \end{parts}
 
 \question Muestre brevemente como se realizaría el calculo de la TFD de $x[n]=\{0\;1\;2\;3\}$
 usando el algoritmo de Transformada Rápida de Fourier visto en clases.
+\begin{solution}
+    Un algoritmo de Transformada Rápida de Fourier divide la señal en el tiempo en muestras
+    pares e impares ($\bm{x_p}$ y $\bm{x_i}$), aplica la TFD (es recursivo!) a cada una y las vuelve a unir
+    de acuerdo al siguiente esquema:
+
+    \begin{align}
+        x[n]\rightarrow
+        \stackrel{FFT}{
+        \boxed{
+        \bm{x}=\begin{bmatrix}
+            x[0]\\
+            x[1]\\
+            x[2]\\
+            x[3]\\
+            x[4]\\
+            \vdots\\
+            x[N-1]
+        \end{bmatrix}
+        \begin{matrix}
+            \nearrow\\ \\ \\
+            \searrow
+        \end{matrix}
+        \begin{matrix}
+            \bm{x_p}=\begin{bmatrix}
+                x[0]\\x[2]\\x[4]\\\vdots
+            \end{bmatrix}\stackrel{FFT}{\longrightarrow}\bm{X_p}\\
+            \\
+            \bm{x_i}=\begin{bmatrix}
+                x[1]\\x[3]\\x[6]\\\vdots
+            \end{bmatrix}\stackrel{FFT}{\longrightarrow}\bm{X_i}
+        \end{matrix}
+        \begin{matrix}
+            \searrow\\ \\ \\
+            \nearrow
+        \end{matrix}
+        \begin{matrix}
+            \bm{X_p+D_NX_i = X_T}\longrightarrow\\
+            \bm{X_p-D_NX_i = X_B}\longrightarrow
+        \end{matrix}
+        \begin{bmatrix}
+            \bm{X_T}\\
+            \bm{X_B}
+        \end{bmatrix}=\bm{X}
+        }
+        }\rightarrow X[k]
+    \end{align}
+    Con la matriz $\bm{D_N}$ dada por:
+    \begin{equation} 
+        \bm{D_N}=\begin{bmatrix}
+            1 & 0& 0 & \dots & 0\\            
+            0 & W_N^1& 0 & \dots &  0\\            
+            0 & 0& W_N^2 & \dots & 0\\            
+            \vdots & \vdots& \vdots & \ddots& \vdots\\            
+            0 & 0& 0 & \dots& W_N^{\frac{N}{2}-1}\\            
+        \end{bmatrix}
+    \end{equation}
+    Al aplicar recursivamente el algoritmo las secuencias $\bm{x_p}$ y $\bm{x_i}$
+    se vuelven a dividir, cada una en dos sub-secuencias, hasta llegar a una
+    secuencia de largo 1. Al aplicar la TFD a una secuencia de largo 1, se obtiene la misma
+    secuencia, y se comienza a construir la TFD.
+
+    En el caso de la señal $x[n]=\{0\;1\;2\;3\}$ ($N=4$), al aplicar recursivamente
+    el algoritmo, y notando que $\bm{D_2}=[1]$ y $\bm{D_4}=\begin{bmatrix}
+        1 & 0\\ 0 & W_4
+    \end{bmatrix}=\begin{bmatrix}
+        1 & 0\\ 0 & -j
+    \end{bmatrix}$:
+
+    \begin{gather}
+    \begin{bmatrix}
+        x[0]\\x[1]\\x[2]\\x[3]
+    \end{bmatrix}
+    =\begin{bmatrix}
+        0\\1\\2\\3
+    \end{bmatrix}
+    \begin{matrix}
+        \nearrow\\ \\ \\
+        \searrow
+    \end{matrix}
+    \begin{matrix}
+        \begin{bmatrix}
+            0\\ 2
+        \end{bmatrix}
+        \begin{matrix}
+            \nearrow\\ 
+            \searrow
+        \end{matrix}
+        \\ \\ \\ \\
+        \begin{bmatrix}
+            1\\ 3
+        \end{bmatrix}
+        \begin{matrix}
+            \nearrow\\ 
+            \searrow
+        \end{matrix}
+    \end{matrix}
+    \begin{matrix}
+        \\
+        \begin{bmatrix}
+            0
+        \end{bmatrix}\stackrel{TFD}{\longrightarrow}
+        \begin{bmatrix}
+            0
+        \end{bmatrix}\\\\
+        \begin{bmatrix}
+            2
+        \end{bmatrix}\stackrel{TFD}{\longrightarrow}
+        \begin{bmatrix}
+            2
+        \end{bmatrix}\\\\\\
+        \begin{bmatrix}
+            1
+        \end{bmatrix}\stackrel{TFD}{\longrightarrow}
+        \begin{bmatrix}
+            1
+        \end{bmatrix}\\\\
+        \begin{bmatrix}
+            3
+        \end{bmatrix}\stackrel{TFD}{\longrightarrow}
+        \begin{bmatrix}
+            3
+        \end{bmatrix}\\\\
+    \end{matrix}
+    \begin{matrix}
+        \begin{matrix}
+            \searrow\\\\
+            \nearrow
+        \end{matrix}
+        \begin{bmatrix}
+            0 + (1)2\\
+            0 - (1)2\\
+        \end{bmatrix}
+        =\begin{bmatrix}
+            2\\
+            -2
+        \end{bmatrix}
+        \searrow
+        \\ \\ \\\\
+        \begin{matrix}
+            \searrow\\\\
+            \nearrow
+        \end{matrix}
+        \begin{bmatrix}
+            1 + (1)3\\
+            1 - (1)3\\
+        \end{bmatrix}
+        =\begin{bmatrix}
+            4\\
+            -2
+        \end{bmatrix}
+        \nearrow
+    \end{matrix}
+    \begin{matrix}
+        \bm{X_T}=\begin{bmatrix}
+            2\\ -2
+        \end{bmatrix}
+        +\begin{bmatrix}
+            1 & 0\\
+            0 & -j
+        \end{bmatrix}
+        \begin{bmatrix}
+            4\\-2
+        \end{bmatrix}\\\\
+        \bm{X_B}=\begin{bmatrix}
+            2\\ -2
+        \end{bmatrix}
+        -\begin{bmatrix}
+            1 & 0\\
+            0 & -j
+        \end{bmatrix}
+        \begin{bmatrix}
+            4\\-2
+        \end{bmatrix}
+    \end{matrix}\\
+    \begin{matrix}
+    \bm{X_T}=\begin{bmatrix}
+        2\\-2
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+        4\\2j
+    \end{bmatrix}
+    =\begin{bmatrix}
+        6\\-2+2j
+    \end{bmatrix}\searrow
+    \\\\
+    \bm{X_B}=\begin{bmatrix}
+        2\\-2
+    \end{bmatrix}
+    -
+    \begin{bmatrix}
+       4\\2j 
+    \end{bmatrix}
+    =\begin{bmatrix}
+        -2\\-2-2j
+    \end{bmatrix}\nearrow
+    \end{matrix}
+    \begin{bmatrix}
+        \bm{X_T}\\\bm{X_B}
+    \end{bmatrix}=
+    \begin{bmatrix}
+        6\\-2+2j\\-2\\-2-2j
+    \end{bmatrix}
+    =\begin{bmatrix}
+        X[0]\\X[1]\\X[2]\\X[3]
+    \end{bmatrix}
+    \end{gather}
+
+\end{solution}
 
 \question Implemente en Matlab el algoritmo de Transformada Rápida de Fourier en
 Matlab. Puede asumir que el vector de entrada es de $N=2^{m}$ una potencia de dos.
 
  \begin{parts}
     \part Compruebe la validez calculando la TFD $x[n]$ de la pregunta 1.
+    \begin{solution}
+        En la pag. 439 del libro se encuentra una implementación del algoritmo recién
+        visto. Sin embargo la implementación del libro tiene dos errores. Arreglando los errores
+        se obtiene:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+function Xdft = fftrecur(x)
+% Recursive computation of the DFT using divide & conquer
+% N should be a power of 2
+N = length(x);
+if N == 1
+    Xdft = x;
+else
+    m = N/2;
+    Xp = fftrecur(x(1:2:N));
+    Xi = fftrecur(x(2:2:N));
+    W = exp(-2j*pi/N).^((0:m-1)'); % <- Aquí había un error
+    temp = W.*Xi;
+    Xdft = [ Xp+temp ; Xp-temp ]; % <- Aquí había otro
+end
+end
+        \end{minted}
+
+        Y se comprueba que la implementación funciona.
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+x = [1 1 0 3];
+X = fftrecur(x)
+
+X =
+
+   5.0000 + 0.0000i
+   1.0000 + 2.0000i
+  -3.0000 + 0.0000i
+   1.0000 - 2.0000i
+        \end{minted}
+    \end{solution}
     \part Considere la siguiente implementación directa (por definición) de la TFD:
-\begin{minted}{matlab}
+\begin{minted}[fontsize=\footnotesize]{matlab}
 function Xdft=dftdirect(x)
 % Direct computation of the DFT
 N=length(x); Q=2*pi/N;
 for k=1:N
-S=0;
-for n=1:N
-W(k,n)=exp(-1j*Q*(k-1)*(n-1));
-S=S+W(k,n)*x(n);
+    S=0;
+    for n=1:N
+        W(k,n)=exp(-1j*Q*(k-1)*(n-1));
+        S=S+W(k,n)*x(n);
+    end
+    Xdft(k)=S;
 end
-Xdft(k)=S;
 end
 \end{minted}
 
     Usando las funciones \texttt{tic} y \texttt{toc} de Matlab, compare
     el rendimiento de su implementación y la de \texttt{dftdirect}. Para la generación del vector de entrada de prueba puede utilizar la función \texttt{rand}.
+    \begin{solution}
+        Al comparar el tiempo que demora en ejecutarse un algoritmo de TFD por definición, y otro
+        de Transformada Rápida de Fourier hay una diferencia notoria:
+
+        \includegraphics[width=14cm]{imagenes/7.3b.png}
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 3 (b)
+
+K = 10; % N=2^1 hasta 2^10
+reps = 50; % Cada prueba se repite 10 veces y se promedia
+
+k_vec = 1:K;
+tiempos_direct = zeros(1,K);
+tiempos_fft = zeros(1,K);
+
+for k = k_vec
+    for r = 1:reps
+        x = rand(1,2^k);
+
+        tic;
+        dftdirect(x);
+        tiempos_direct(k) = tiempos_direct(k) + toc;
+
+        tic;
+        fftrecur(x);
+        tiempos_fft(k) = tiempos_fft(k) + toc;
+    end
+end
+
+figure
+subplot(2,1,1)
+plot(k_vec, tiempos_direct./reps, 'LineWidth', 2); hold on
+plot(k_vec, tiempos_fft./reps, 'LineWidth', 2)
+legend("dft direct", "fftrecur")
+xlabel("K")
+ylabel("Tiempo (segundos)")
+title("Tiempo de ejecucion de TFD, N=2^K")
+subplot(2,1,2)
+semilogy(k_vec, tiempos_direct./reps, 'LineWidth', 2); hold on
+semilogy(k_vec, tiempos_fft./reps, 'LineWidth', 2)
+legend("dft direct", "fftrecur")
+xlabel("K")
+ylabel("Tiempo (segundos) (escala logaritmica)")
+title("Tiempo de ejecucion de TFD, N=2^K (escala logaritmica)")
+        \end{minted}
+    \end{solution}
  \end{parts}
 
 \end{questions}

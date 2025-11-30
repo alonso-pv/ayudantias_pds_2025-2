@@ -1,0 +1,505 @@
+\documentclass[12pt]{exam}
+\usepackage{preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 9 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question Realice las siguientes conversiones de especificaciones de filtro:
+\begin{parts}
+    \part Dadas las especificaciones absoutas $\delta_p=0.01$ y $\delta_s=0.0001$,
+    determine las especificaciones relativas $A_p$ y $A_s$, y las especificaciones
+    análogas $\epsilon$ y $A$.
+    \begin{solution}\\
+        \includegraphics[width=14cm]{imagenes/9.1.png}
+
+        \paragraph{Absolutas a relativas} Para pasar de especificaciones absolutas análogas, usamos las fórmulas
+        \begin{align}
+            &A_p=20\log\left(\frac{1+\delta_p}{1-\delta_p}\right)
+            &A_s=20\log\left(\frac{1+\delta_p}{\delta_s}\right)\label{eq:2}
+        \end{align}
+
+        Reemplazando:
+        \begin{align}
+            A_p&=20\log\left(\frac{1+0.01}{1-0.01}\right)
+            &A_s&=20\log\left(\frac{1+0.01}{0.0001}\right)\\
+            &=0.17\text{ dB} & &=80.08\text{ dB}
+        \end{align}
+
+        \paragraph{Relativas a análogas} Para obtener las especificaciones análogas
+        utilizamos la fórmulas
+        \begin{align}
+            &\epsilon=\sqrt{10^{A_p/10}-1} &A=10^{A_s/20}\label{eq:1}
+        \end{align}
+
+        Reemplazando por los valores calculados:        
+        \begin{align}
+            \epsilon&=\sqrt{10^{0.17/10}-1} & A&=10^{80.08/20}\\
+            &=0.19 & &=10000
+        \end{align}
+
+    \end{solution}
+
+    \part Dadas las especificaciones análogas $\epsilon=0.25$ y $A=200$, obtenga
+    las especificaciones relativas $A_p$ y $A_s$, y las especificaciones absolutas
+    $\delta_p$ y $\delta_s$.
+    \begin{solution}
+        \paragraph{Análogas a relativas} Despejando las ecuaciones del paso (\ref{eq:1})
+        se obtiene
+        \begin{align}
+            A_p&=20\log(\sqrt{1+\epsilon^2}) & A_s&=20\log(A)
+        \end{align}
+
+        Reemplazando por los valores:
+        \begin{align}
+            A_p&=20\log(\sqrt{1+0.25^2}) & A_s&=20\log(200)\\
+            &=0.26\text{ dB} & &=46.02\text{ dB}
+        \end{align}
+
+        \paragraph{Relativas a absolutas} Despejando las ecuaciones del paso (\ref{eq:2})
+        se obtiene
+        \begin{align}
+            \delta_p&=\frac{10^{A_p/20}-1}{10^{A_p/20}+1} &
+            \delta_s&=\frac{1+\delta_p}{10^{A_s/20}}
+        \end{align}
+
+        Reemplazando por los datos se obtiene:
+        \begin{align}
+            \delta_p&=\frac{10^{0.26/20}-1}{10^{0.26/20}+1} &
+            \delta_s&=\frac{1+0.014}{10^{46.02/20}}\\
+            &=0.014 & &=0.005
+        \end{align}
+
+    \end{solution}
+\end{parts}
+
+\question Para cada uno de los siguientes filtros FIR de fase lineal descritos por respuesta a
+impulso, graficar en Matlab respuesta a impulso, respuesta de amplitud, respuesta
+de ángulo, y ceros.
+\begin{parts}
+    \part Filtro tipo I: $h[n]=\{1,\;2,\;-1,\;5,\;-1,\;2,\;1\}$
+    \begin{solution}
+        $h[n]$ es de tipo I ya que tiene simetría par, con orden par:
+        \begin{equation}
+            h[n]=h[M-n]\text{ (simetría par)},\qquad M=6 \text{ (par)}
+        \end{equation}
+        Reescribiendo $h[n]$ como
+        \begin{equation}
+            h[n]=\delta[n]
+                +2\delta[n-1]
+                -1\delta[n-2]
+                +5\delta[n-3]
+                -1\delta[n-4]
+                +2\delta[n-5]
+                +\delta[n-6]
+        \end{equation}
+        Obtenemos la TFTD:
+        \begin{gather}
+            H(z)=1 +2z^{-1} -z^{-2} +5z^{-3} -z^{-4} +2z^{-5} +z^{-6}\\
+            \downarrow z=e^{j\omega}\notag\\
+            H(e^{j\omega})=1 +2e^{-j\omega} -e^{-2j\omega} +5e^{-3j\omega} -e^{-4j\omega} +2e^{-5j\omega} +e^{-6j\omega}
+        \end{gather}
+
+        Factorizamos la expresión por $e^{-3j\omega}=e^{-\frac{M}{2}j\omega}$,
+        nos aprovechamos de la simetría par de los coeficientes:
+        \begin{align}
+            H(e^{j\omega})=\left(e^{3j\omega} +2e^{2j\omega} -e^{j\omega}
+                +5 -e^{-j\omega} +2e^{-2j\omega} +e^{-3j\omega}\right)e^{-3j\omega}
+        \end{align}
+        Recordando que $e^{j\theta}+e^{-j\theta}=2\cos(\theta)$:
+        \begin{align}
+            &e^{3j\omega} +2e^{2j\omega} -e^{j\omega}
+                +5 -e^{-j\omega} +2e^{-2j\omega} +e^{-3j\omega}\\
+            =&(e^{3j\omega} +e^{-3j\omega})+2(e^{2j\omega} + e^{-2j\omega}) -(e^{j\omega} +e^{-j\omega})
+                +5  \\
+            =&2\cos(3\omega)+4\cos(2\omega)-2\cos(\omega)+5
+        \end{align}
+        \begin{align}
+            H(e^{j\omega})&=(2\cos(3\omega)+4\cos(2\omega)-2\cos(\omega)+5)e^{-3j\omega}\\
+            &=A(e^{j\omega})e^{j\Psi(\omega)},\qquad \Psi(\omega)=-3\omega=-\frac{M}{2}\omega
+        \end{align}
+
+        Para graficar se usa:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+% --- Tipo I ---
+h = [1, 2, -1, 5, -1, 2, 1];    M = 6; % M par, simetría par
+A = 2*cos(3*w) +4*cos(2*w) -2*cos(w) + 5;
+psi = -M/2*w;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.2a.png}
+        
+
+        
+    \end{solution}
+    
+    \part Filtro tipo II: $h[n]=\{1,\;2,\;-1,\;-1,\;2,\;1\}$
+    \begin{solution}
+        $h[n]$ es de tipo II ya que tiene simetría par y orden impar:
+        \begin{equation}
+            h[n]=h[M-n]\text{ (simetría par)},\qquad M=5 \text{ (impar)}
+        \end{equation}
+        Siguiendo el mismo procedimiento que en el punto anterior se obtiene la
+        TFTD:
+        \begin{gather}
+            h[n]=\{1,\;2,\;-1,\;-1,\;2,\;1\}\\
+            \downarrow\text{TFTD}\notag\\
+            H(e^{j\omega})=1 +2e^{-j\omega} -e^{-2j\omega} -e^{-3j\omega} +2e^{-4j\omega} +e^{-5j\omega}
+        \end{gather}
+        Con $M=5$, factorizamos por $e^{-\frac{5}{2}j\omega}=e^{-\frac{M}{2}j\omega}$ para
+        obtener $A(e^{j\omega})$ y $\Psi(\omega)$ (similar al punto anterior):
+        \begin{align}
+            H(e^{j\omega})&=\left(e^{\frac{5}{2}j\omega} +2e^{\frac{3}{2}j\omega} -e^{\frac{1}{2}j\omega} -e^{-\frac{1}{2}j\omega} +2e^{-\frac{3}{2}j\omega} +e^{-\frac{5}{2}j\omega}\right)e^{-\frac{5}{2}j\omega}\\
+            &=\left(e^{\frac{5}{2}j\omega} +e^{-\frac{5}{2}j\omega} +2e^{\frac{3}{2}j\omega}  +2e^{-\frac{3}{2}j\omega}-e^{\frac{1}{2}j\omega} -e^{-\frac{1}{2}j\omega}\right)e^{-\frac{5}{2}j\omega}\\
+            &=\left[2\cos\left(\frac{5}{2}\omega\right) + 4\cos\left(\frac{3}{2}\omega\right) - 2\cos\left(\frac{1}{2}\omega\right)\right]e^{-\frac{5}{2}j\omega}\\
+            &=A(e^{j\omega})e^{j\Psi(\omega)},\qquad \Psi(\omega)=-\frac{5}{2}\omega=-\frac{M}{2}\omega
+        \end{align}
+
+        Notemos que en este caso, $\cos(\pm\frac{n}{2}\pi)=0$, es decir $\left.A(e^{j\omega})\right|_{\omega=\pm\pi}=0$.
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+% --- Tipo II ---
+h = [1, 2, -1, -1, 2, 1];      M = 5; % M impar, simetría par
+A = 2*cos(5/2*w) +4*cos(3/2*w) -2*cos(1/2*w);
+psi = -M/2*w;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.2b.png}
+    \end{solution}
+
+    \part Filtro tipo III: $h[n]=\{1,\;2,\;-1,\;0,\;1,\;-2,\;-1\}$
+    \begin{solution}
+        En este caso $h[n]$ es de tipo III ya que tiene simetría impar y orden par:
+        \begin{equation}
+            h[n]=-h[M-n]\text{ (simetría impar)},\qquad M=6 \text{ (par)}
+        \end{equation}
+        El procedimiento para obtener la respuesta de amplitud es similar a los puntos anteriores:
+        \begin{gather}
+            h[n]=\{1,\;2,\;-1,\;0,\;1,\;-2,\;-1\}\\
+            \downarrow\text{TFTD}\notag\\
+            H(e^{j\omega})=1 +2e^{-j\omega} -e^{-2j\omega} +(0)e^{-3j\omega} +e^{-4j\omega} -2e^{-5j\omega} -e^{-6j\omega}
+        \end{gather}
+        Factorizamos la expresión por $e^{-3j\omega}=e^{-\frac{M}{2}j\omega}$:
+        \begin{align}
+            H(e^{j\omega})&=\left(e^{3j\omega} +2e^{2j\omega} -e^{j\omega} +e^{-j\omega} -2e^{-2j\omega} -e^{-3j\omega}\right)e^{-3j\omega}\\
+            &=\left[e^{3j\omega} -e^{-3j\omega} +2\left(e^{2j\omega} -e^{-2j\omega}\right) -\left(e^{j\omega} -e^{-j\omega}\right)\right]e^{-3j\omega}
+        \end{align}
+        Usando $e^{j\theta}-e^{-j\theta}=2j\sin(\theta)$, y $j=e^{j\pi/2}$:
+        \begin{align}
+            H(e^{j\omega})&=\left[2j\sin(3\omega) +4j\sin(2\omega) -2j\sin(\omega)\right]e^{-3j\omega}\\
+            &=\left[2\sin(3\omega) +4\sin(2\omega) -2\sin(\omega)\right]e^{j(\frac{\pi}{2}-3\omega)}\\
+            &=A(e^{j\omega})e^{j\Psi(\omega)},\qquad\Psi(\omega)=\frac{\pi}{2}-3\omega =\frac{\pi}{2}-\frac{M}{2}\omega
+        \end{align}
+
+        Como $\sin(n\pi)=0$, entonces $\left.A(e^{j\omega})\right|_{\omega=0,\;\pm\pi}=0$.
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+% --- Tipo III ---
+h = [1, 2 -1, 0, 1, -2, -1];   M = 6; % M par, simetría impar
+A = 2*sin(3*w) +4*sin(2*w) -2*sin(w);
+psi = pi/2-M/2*w;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.2c.png}
+    \end{solution}
+
+    \part Filtro tipo IV: $h[n]=\{1,\;2,\;-1,\;1,\;-2,\;-1\}$
+    \begin{solution}
+       $h[n]$ es de tipo IV pues tiene simetría impar y orden impar:
+        \begin{equation}
+            h[n]=-h[M-n]\text{ (simetría impar)},\qquad M=5 \text{ (impar)}
+        \end{equation}
+        Se obtiene la respuesta de amplitud y ángulo como en los puntos anteriores:
+        \begin{gather}
+            h[n]=\{1,\;2,\;-1,\;1,\;-2,\;-1\}\\
+            \downarrow\text{TFTD}\notag\\
+            H(e^{j\omega})=1 +2e^{-j\omega} -e^{-2j\omega}  +e^{-3j\omega} -2e^{-4j\omega} -e^{-5j\omega}
+        \end{gather}
+        Factorizando por $e^{-\frac{5}{2}j\omega}=e^{-\frac{M}{2}j\omega}$:
+        \begin{align}
+            H(e^{j\omega})&=\left(e^{\frac{5}{2}j\omega} +2e^{\frac{3}{2}j\omega} -e^{\frac{1}{2}j\omega}  +e^{-\frac{1}{2}j\omega} -2e^{-\frac{3}{2}j\omega} -e^{-\frac{5}{2}j\omega}\right)e^{-\frac{5}{2}j\omega}\\
+            &=\left[e^{\frac{5}{2}j\omega} -e^{-\frac{5}{2}j\omega} +2(e^{\frac{3}{2}j\omega} -e^{-\frac{3}{2}j\omega}) -(e^{\frac{1}{2}j\omega}  -e^{-\frac{1}{2}j\omega})\right]e^{-\frac{5}{2}j\omega}
+        \end{align}
+        Considerando $e^{j\theta}-e^{-j\theta}=2j\sin(\theta)$, y $j=e^{j\pi/2}$:
+        \begin{align}
+            H(e^{j\omega})&=\left[2j\sin\left(\frac{5}{2}\omega\right) +4j\sin\left(\frac{3}{2}\omega\right) -2j\sin\left(\frac{1}{2}\omega\right)\right]e^{-\frac{5}{2}j\omega}\\
+            &=\left[2\sin\left(\frac{5}{2}\omega\right) +4\sin\left(\frac{3}{2}\omega\right) -2\sin\left(\frac{1}{2}\omega\right)\right]e^{j\left(\frac{\pi}{2}-\frac{5}{2}\omega\right)}\\
+            &=A(e^{j\omega})e^{j\Psi(\omega)},\qquad\Psi(\omega)=\frac{\pi}{2}-\frac{5}{2}\omega=\frac{\pi}{2}-\frac{M}{2}\omega
+        \end{align}
+
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+% --- Tipo IV ---
+h = [1, 2, -1, 1, -2, -1];     M = 5; % M impar, simetría impar
+A = 2*sin(5/2*w) + 4*sin(3/2*w) - 2*sin(1/2*w);
+psi = pi/2-M/2*w; 
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.2d.png}
+        
+
+    \end{solution}
+\end{parts}
+
+\question Diseñe un filtro FIR pasabajos que cumpla:
+\begin{itemize}
+    \item Frecuencia de borde de banda de paso $\omega_p=0.3\pi$
+    \item Ripple de banda de paso $A_p=0.5$ dB
+    \item Frecuencia de borde de rechaza banda $\omega_s=0.5\pi$
+    \item Atenuación de rechaza banda $A_s=50$ dB
+\end{itemize}
+\begin{parts}
+    \part Determinar la respuesta a impulso de un filtro ideal que cumpla con las
+    especificaciones.
+    \begin{solution}
+        El filtro pasabajo ideal tiene la forma:
+        \begin{align}
+            &H(e^{j\omega})=\begin{cases}
+                e^{-j\omega\alpha}, & |\omega|<\omega_c\\
+                0, & \omega_c<|\omega|<\pi
+            \end{cases}
+            & &h[n]=\frac{\sin\left(\omega_c[n-\alpha]\right)}{\pi[n-\alpha]}
+        \end{align}
+        Este filtro tiene una banda de transición $\Delta\omega=\omega_s-\omega_p=0$, no tiene ripple ($A_p=0$ dB)
+        y atenuación infinita ($A_s=\infty$ dB). $\alpha$ no tiene efectos en ninguno de estos elementos.
+
+        Escogiendo la frecuencia de corte como el punto medio de la banda de transición requerida:
+        $\omega_c=(\omega_p+\omega_s)/2=(0.3\pi+0.5\pi)/2=0.4\pi$. Y $\alpha=0$:
+        \begin{align}
+            &H(e^{j\omega})=\begin{cases}
+                1, & |\omega|<0.4\pi\\
+                0, & 0.4\pi<|\omega|<\pi
+            \end{cases}
+            & &h[n]=\frac{\sin\left(0.4\pi n\right)}{\pi n}
+        \end{align}
+
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+n = -30:30;
+
+wc = 0.4*pi;
+a = 0;
+h_ideal = sin(wc*(n-a))./(pi* (n-a));
+h_ideal(isnan(h_ideal)) = wc/pi;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.3a.png}
+    \end{solution}
+    \part Utilizando una ventana rectangular, determine en Matlab un filtro FIR que cumpla con
+    la especificación. Grafique la respuesta de magnitud.
+    \begin{solution}
+        El diseño del filtro se realiza a partir de un filtro ideal. Escogiendo la frecuencia de corte
+        $\omega_c=(\omega_p+\omega_s)/2=(0.3\pi+0.5\pi)/2=0.4\pi$:
+        \begin{align}
+            h_i[n]=\frac{\sin\left(0.4\pi [n-\alpha]\right)}{\pi [n-\alpha]}
+        \end{align}
+        Para que el filtro sea FIR (respuesta a impulso finita), aplicamos una ventana rectangular de largo
+        L:
+        \begin{align}
+            h_{LP}=h_i[n]w_R[n]=\begin{cases}
+                \frac{\sin\left(0.4\pi [n-M/2]\right)}{\pi [n-M/2]}, & 0\leq n \leq M=L-1\\
+                0, & \text{otro valor}
+            \end{cases}
+        \end{align}
+        La decisión del largo L se realiza de acuerdo a la banda de transición.
+        De la tabla del punto 3(c), la banda de transición
+        con una ventana rectangular es $\Delta\omega=1.8\pi/L$ (columna \textbf{Exact} $\Delta\omega$).
+        Con las especificaciones $\omega_p=0.3\pi$ y $\omega_s=0.5\pi$, la banda de transición
+        deseada es $\Delta\omega=\omega_s-\omega_p=0.2\pi$. Por lo tanto:
+        \begin{align}
+            &\Delta\omega=1.8\pi/L=0.2\pi & &\longrightarrow & L=9, M=8
+        \end{align}
+        
+        Con ese valor de M, se determina la respuesta a impulso del filtro:
+        \begin{align}
+            h_{LP}=h_i[n]w_R[n]=\begin{cases}
+                \frac{\sin\left(0.4\pi [n-4]\right)}{\pi [n-4]}, & 0\leq n \leq 8=M=L-1\\
+                0, & \text{otro valor}
+            \end{cases}
+        \end{align}
+        Esto se realiza en Matlab y se comprueba si el filtro cumple con los requerimientos:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 3 (b)
+
+% Especificaciones
+wp = 0.3*pi; ws = 0.5*pi;
+delta_p = 0.028; delta_s = 0.0032;
+
+M = 8;
+wc = 0.4*pi;
+n = 0:M;
+
+h_rect = sin(wc*(n-M/2))./(pi * (n-M/2));
+h_rect(isnan(h_rect)) = wc/pi;
+
+w = linspace(0, pi, 1000);
+H_rect = freqz(h_rect, 1, w);
+
+subplot(1,2,1)
+stem(n,h_rect,'filled', LineWidth=2);
+xlabel('n');
+ylabel('h_{LP}[n]');
+title('Respuesta a impulso');
+grid on;
+
+
+subplot(1,2,2)
+plot(w, abs(H_rect), LineWidth=2)
+xline(wp, '--', '\omega_p', LabelOrientation="horizontal", LineWidth=2)
+xline(ws, '--', '\omega_s', LabelOrientation="horizontal", LineWidth=2)
+yline(1+delta_p, '--', '1+\delta_p', LineWidth=2)
+yline(1-delta_p, '--', '1-\delta_p', LineWidth=2)
+yline(delta_s, '--', '\delta_s', LineWidth=2)
+xlabel('Frecuencia \omega');
+ylabel('Magnitud |H(e^{j\omega})|');
+title('Respuesta de magnitud');
+grid on;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.3b.png}
+
+        Al aplicar la ventana sobre la respuesta al filtro ideal, nunca se obtiene
+        un filtro perfecto. En particular la ventana rectangular produce un ripple
+        alto en la banda de paso y rechazo, pero tiene una buena banda de transición
+        con una ventana pequeña. Para cumplir con todos los requerimientos es necesario
+        escoger otra ventana.
+    \end{solution}
+    \part Repita seleccionando una ventana más apropiada de la tabla.\\
+    \includegraphics[width=15cm]{imagenes/9.p3.png}\\
+    Compare la respuesta de magnitud respecto al punto anterior.
+    \begin{solution}
+        Aqui utilizamos el procedimiento de diseño completo.
+        \paragraph{1. Conversion de especificaciones} Convertimos de especificaciones
+        relativas\\$A_p=0.5$ dB, $A_s=50$ dB a absolutas $\delta_p$ y $\delta_s$:
+        \begin{align}
+            \delta_p&=\frac{10^{A_p/20}-1}{10^{A_p/20}+1} &
+            \delta_s&=\frac{1+\delta_p}{10^{A_s/20}}\\
+            &=\frac{10^{0.5/20}-1}{10^{0.5/20}+1} &
+            &=\frac{1+0.028}{10^{50/20}}\\
+            &=0.028 & &=0.032
+        \end{align}
+
+        \paragraph{2. Frecuencia de corte} Escogemos la frecuencia de corte en la mitad
+        de la banda de transición $\omega_c=(\omega_p+\omega_s)/2=(0.3\pi+0.5\pi)/2=0.4\pi$
+
+        \paragraph{3. Ripple mínimo y atenuación equivalente} El criterio para escoger una
+        ventana u otra es la atenuación que la ventana logra.
+        
+        Reducimos la especificación a un valor de ripple: 
+        \begin{align}
+            \delta=\min\{\delta_p,\;\delta_s\}=0.028
+        \end{align}
+        
+        Encontramos la atenuación equivalente:
+        \begin{align}
+            A&=20\log\left(\frac{1}{\delta}\right)=-20\log(\delta)\\
+            &=49.89\text{ dB}
+        \end{align}
+
+        \paragraph{4. Selección de ventana} Escogemos de la tabla la ventana que tenga la menor
+        atenuación $A_s$ que sea mayor a $A=49.89$ calculado. En este caso la ventana
+        de Hamming cumple con esta condición $53>49.89$.
+
+        \paragraph{5. Determinación de longitud de la ventana} Ubicamos en
+        la columna \textbf{Exact} $\Delta\omega$ la banda de transición para la ventana
+        escogida, e igualamos al $\Delta\omega$ de las especificaciones:
+        \begin{align}
+            \Delta\omega&=6.6\pi/L=\omega_s-\omega_s\\
+            &=6.6\pi/L=0.2\pi\quad\longrightarrow\quad L=33=M+1
+        \end{align}
+
+        \paragraph{6. Filtro ideal} Se determina la respuesta a impulso del filtro ideal
+        \begin{equation}
+            h_i[n]=\frac{\sin(\omega_c[n-M/2])}{\pi[n-M/2]}=\frac{\sin(0.4\pi[n-16])}{\pi[n-16]}
+        \end{equation}
+        
+        \paragraph{7. Respuesta a impulso aplicando ventana} La respuesta a impulso del
+        filtro diseñado se determina aplicando la ventana escogida:
+        \begin{align}
+            h[n]=h_i[n]w[n]
+        \end{align}
+        En este caso $w[n]$ es la ventana Hamming que se escogió de orden $M=32$.
+        \begin{align}
+            w[n]=\begin{cases}
+                0.54-0.46\cos(2\pi n/M), & 0\leq n \leq M\\
+                0, & \text{otro valor}
+            \end{cases}
+        \end{align}
+
+        \paragraph{8. Comprobación} Se comprueba en Matlab si el filtro cumple con las especificaciones.
+        De no ser así, se escoge un $M$ mayor y se vuelve al paso 6 de diseño.
+
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+%% 3 (c)
+
+% Especificaciones
+wp = 0.3*pi; ws = 0.5*pi;
+delta_p = 0.028; delta_s = 0.0032;
+
+M = 32; 
+wc = 0.4*pi;
+n_hamm = 0:M;
+
+h_ideal = ( sin(wc*(n_hamm-M/2))./(pi * (n_hamm-M/2)) );
+h_ideal(isnan(h_ideal)) = wc/pi;
+h_hamming = h_ideal.*hamming(M+1)';
+
+
+w = linspace(0, pi, 1000);
+H_hamming = freqz(h_hamming, 1, w);
+
+subplot(1,2,1)
+stem(n_hamm,h_hamming,'filled', LineWidth=2);
+xlabel('n');
+ylabel('h_{LP}[n]');
+title('Respuesta a impulso');
+grid on;
+
+subplot(1,2,2)
+plot(w, abs(H_hamming), LineWidth=2)
+xline(wp, '--', '\omega_p', LabelOrientation="horizontal")
+xline(ws, '--', '\omega_s', LabelOrientation="horizontal")
+yline(1+delta_p, '--', '1+\delta_p')
+yline(1-delta_p, '--', '1-\delta_p')
+yline(delta_s, '--', '\delta_s')
+xlabel('Frecuencia \omega');
+ylabel('Magnitud |H(e^{j\omega})|');
+title('Respuesta de magnitud');
+grid on;
+        \end{minted}
+
+        \includegraphics[width=14cm]{imagenes/9.3c.png}
+        
+        \includegraphics[width=10cm]{imagenes/9.3c.2.png}
+        
+        El filtro cumple con todas las especificaciones por lo que no es necesario
+        aumentar $M$
+
+        Al comparar los filtros:
+        
+        \includegraphics[width=14cm]{imagenes/9.3c.3.png}
+
+        Al aplicar la ventana de Hamming se obtiene un ripple mucho menor. Por otro
+        lado se debe ocupar una ventana más grande para lograr una buena banda de transición, por lo que es más costoso implementar
+        este filtro. La ventana rectangular por otro lado logra una banda de transición
+        relativamente buena con una ventana pequeña.
+
+    \end{solution}
+\end{parts}
+
+
+\end{questions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
