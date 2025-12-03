@@ -1,0 +1,80 @@
+\documentclass[12pt]{exam}
+\usepackage{../preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 11 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+\question Considere un filtro pasa-bajo análogo Butterworth $H_c(s)$ de cuarto
+orden con una frecuencia de corte (3 dB) en 20 Hz. Determine y bosqueje los polos de $H_c(s)$.
+\begin{solution}
+    En general, el filtro de Butterworth de orden $N$ cumple
+    \begin{equation}
+        \left|H(e^{j\omega})\right|^2=\frac{1}{1+\left(\Omega/\Omega_c\right)^{2N}}
+    \end{equation}
+    Los polos del filtro cumplen con:
+    \begin{align}
+        1+\left(\Omega/\Omega_c\right)^{2N}&=0   \\
+        \left(\Omega/\Omega_c\right)^{2N}&=-1   \\
+        \left(\Omega/\Omega_c\right)^{2N}&=e^{j(2k-1)\pi} 
+    \end{align}
+\end{solution}
+
+\question Con ayuda de Matlab, diseñe un pasa-bajo análogo Butterworth con las
+especificaciones:
+\begin{itemize}
+    \item Frecuencia borde de banda de paso: $F_p=50$ Hz
+    \item Ripple en banda de paso: $A_p=0.5$ dB
+    \item Frecuencia borde de banda de rechazo $F_s=80$ Hz
+    \item Atenuación en banda de rechazo: $A_s=45$ dB
+\end{itemize}
+\begin{parts}
+    \part Obtenga el orden $N$ del filtro.
+    \part Obtenga la frecuencia de corte $\Omega_c$ para el diseño del filtro.
+    \part Obtener en Matlab los polos.
+    \part Gragicar magnitud y fase.
+    \part Obtener un filtro digital mediante transformación impulso invariante, 
+    y graficar magnitud y fase
+\end{parts}
+
+\question Con ayuda de Matlab y usando transformación bilinear, diseñe un filtro
+pasa-bajo de Chebyshev I que cumpla:
+\begin{itemize}
+    \item Frecuencia borde de banda de paso: $\omega_p=0.2\pi$
+    \item Ripple en banda de paso: $A_p=1$ dB
+    \item Frecuencia borde de banda de rechazo $\omega_s=0.3\pi$
+    \item Atenuación en banda de rechazo: $A_s=60$ dB
+\end{itemize}
+\begin{parts}
+    \part Obtener las frecuencias $\Omega_p$ y $\Omega_s$ equivalentes pare el
+    diseño del filtro.
+    \part Obtener $\epsilon$ y $A$ para el diseño.
+    \part Obtener Orden del filtro $N$ y frecuencia de corte $\Omega_c$.
+    \part Obtener en Matlab la función de transferencia y el filtro digital
+    usando \texttt{bilinear}, y graficar magnitud y fase de este.
+\end{parts}
+
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

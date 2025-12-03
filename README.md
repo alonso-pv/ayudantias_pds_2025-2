@@ -36,3 +36,5 @@ Basadas en [Applied Digital Signal Processing](https://github.com/Devin-WEN/UIUC
 
 ## [Ayudantía 10](ayudantia_10/ayudantia_10.pdf)
 [Solución](ayudantia_10/ayudantia_10_solucion.pdf)
+
+## [Ayudantía 11](ayudantia_11/ayudantia_11.pdf)
