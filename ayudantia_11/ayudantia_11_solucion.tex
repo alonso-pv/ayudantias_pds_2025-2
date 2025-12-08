@@ -21,18 +21,60 @@
 \question Considere un filtro pasa-bajo análogo Butterworth $H_c(s)$ de cuarto
 orden con una frecuencia de corte (3 dB) en 20 Hz. Determine y bosqueje los polos de $H_c(s)$.
 \begin{solution}
+    \paragraph{Derivación}
     En general, el filtro de Butterworth de orden $N$ cumple
     \begin{equation}
-        \left|H(e^{j\omega})\right|^2=\frac{1}{1+\left(\Omega/\Omega_c\right)^{2N}}
+        \left|H(\Omega)\right|^2=\frac{1}{1+\left(\Omega/\Omega_c\right)^{2N}}
     \end{equation}
-    Los polos del filtro cumplen con:
+    Considerando $s=j\Omega$, $-1=e^{j(2k-1)\pi}$, y $j=e^{j\pi/2}$ los $N$ polos del filtro cumplen con:
     \begin{align}
-        1+\left(\Omega/\Omega_c\right)^{2N}&=0   \\
-        \left(\Omega/\Omega_c\right)^{2N}&=-1   \\
-        \left(\Omega/\Omega_c\right)^{2N}&=e^{j(2k-1)\pi} 
+        1+\left(s/j\Omega_c\right)^{2N}&=0   \\
+        \left(s/j\Omega_c\right)^{2N}&=-1   \\
+        \left(s/j\Omega_c\right)^{2N}&=e^{j(2k-1)\pi}   \\
+        s/j\Omega_c&=e^{j\frac{2k-1}{2N}\pi}   \\
+        s&=j\Omega_ce^{j\frac{2k-1}{2N}\pi}   \\
+        s&=\Omega_ce^{j\left(\frac{\pi}{2}+\frac{2k-1}{2N}\pi\right)}
     \end{align}
-\end{solution}
+    Esta ecuación tiene $2N$ soluciones $k=1,\;2,\dots,\;2N$. Sin embargo el
+    filtro tiene $N$ polos. Como se desea un filtro con respuesta impulso estable,
+    se escogen los polos con $k=1,\;2,\dots,\;N$, que se encuentran en el SP
+    izquierdo.
 
+
+    \paragraph{Polos del filtro Butterworth y F. de T.} Así, dados $\Omega_c$ (frecuencia
+    de corte) y $N$ (orden del filtro), los polos y función de transferencia son:
+    \begin{align}
+        &\boxed{p_k=\Omega_ce^{j\left(\frac{\pi}{2}+\frac{2k-1}{2N}\pi\right)}}
+        & &\boxed{H(s)=\frac{\Omega_c^N}{(s-p_1)(s-p_2)\dots(s-p_N)}}
+        & &\boxed{k=1,\;2,\dots,\;N}
+    \end{align}
+    Los polos cubren el lado izquierdo de una circunferencia de radio $\Omega_c$.
+    
+    \paragraph{Ahora sí, el problema}
+    Con orden $N=4$, y frecuencia de corte $F_c=20$ Hz, tenemos
+    $\Omega_c=2\pi F_c=40\pi$ y $2N=8$. Por lo tanto:
+    \begin{gather}
+            p_k=40\pi e^{j\left(\frac{\pi}{2}+\frac{2k-1}{8}\pi\right)}
+            =\begin{cases}
+            p_1=40\pi e^{j5\pi/8}   \\
+            p_2=40\pi e^{j7\pi/8}   \\
+            p_3=40\pi e^{j9\pi/8}   \\
+            p_4=40\pi e^{j11\pi/8}
+            \end{cases}
+    \end{gather}
+    Y la función de transferencia es:
+    \begin{equation}
+        H(s)=\frac{(40\pi)^4}{(s-p_1)(s-p_2)(s-p_3)(s-p_4)}
+    \end{equation}
+    
+    Para bosquejar los polos, se dibuja una circunferencia de radio
+    $\Omega_c=40\pi$ como guía, y se ubican los polos en los ángulos que indican
+    las exponenciales complejas. Los polos siempre ``cubren'' la mitad izquierda
+    de la circunferencia
+
+    \includegraphics[width=14cm]{imagenes/11.1.png}
+\end{solution}
+    
 \question Con ayuda de Matlab, diseñe un pasa-bajo análogo Butterworth con las
 especificaciones:
 \begin{itemize}
@@ -43,11 +85,158 @@ especificaciones:
 \end{itemize}
 \begin{parts}
     \part Obtenga el orden $N$ del filtro.
+
+    \begin{solution}
+        Se tiene
+        \begin{gather}
+            F_p=50\text{ Hz} \longrightarrow \Omega_p=2\pi F_p =100\pi  \\
+            F_s=80\text{ Hz} \longrightarrow \Omega_s=2\pi F_s =160\pi
+        \end{gather}
+        La fórmula para hallar el orden $N$ del filtro de Butterworth es:
+        \begin{align}
+            &\boxed{N\geq \frac{\ln\beta}{\ln\alpha}}   
+            & &\boxed{\alpha=\frac{\Omega_s}{\Omega_p}} 
+            & &\boxed{\beta=\frac{\sqrt{10^{A_s/10}-1}}{\sqrt{10^{A_p/10}-1}}}
+        \end{align}
+        Reemplazando:
+            \begin{align}
+                \alpha&=\frac{160\pi}{100\pi}
+                & \beta&=\frac{\sqrt{10^{45/10}-1}}{\sqrt{10^{0.5/10}-1}}
+                & N&\geq\frac{\ln1.6}{\ln509.7} \\
+                %
+                &=1.6
+                & &=509.7
+                & &\geq13.26   \\
+                %
+                &
+                & &
+                & N&=14
+            \end{align}
+    \end{solution}
+
     \part Obtenga la frecuencia de corte $\Omega_c$ para el diseño del filtro.
+    
+    \begin{solution}
+        Una vez obtenido el orden $N$, se utiliza
+        \begin{equation}
+            \boxed{
+            \Omega_p\left(10^{A_p/10}-1\right)^{-1/2N}
+            \leq \Omega_c \leq
+            \Omega_s\left(10^{A_s/10}-1\right)^{-1/2N}
+            }
+        \end{equation}
+        Para escoger la frecuencia de corte. Cualquier valor dentro del
+        intervalo sirve. Al reemplazar:
+        \begin{align}
+            100\pi\left(10^{45/10}-1\right)^{-1/28}
+            &\leq \Omega_c \leq
+            160\pi\left(10^{0.5/10}-1\right)^{-1/28}    \\
+            %
+            338.67 &\leq \Omega_c \leq 347.18
+        \end{align}
+        Escogiendo el límite superior $\Omega_c=347.18$, se obtiene mejor ripple
+        en la banda de paso.
+    \end{solution}
+
     \part Obtener en Matlab los polos.
+
+    \begin{solution}
+        Matlab realiza el procedimiento de diseño (encontrar $\Omega_c$ y $N$),
+        mediante el comando \texttt{buttord}:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+Omegap = 100*pi;
+Omegas = 160*pi;
+Ap = 0.5;
+As = 45;
+
+[N, Omegac] = buttord(Omegap, Omegas, Ap, As, 's')
+
+N =
+
+    14
+
+Omegac =
+
+  347.1811
+        \end{minted}
+        
+        Y se obtienen los polos con el comando \texttt{butter}:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+[z, p, k] = butter(N, Omegac, 's')
+        \end{minted}
+        Equivalente a:
+        \begin{align}
+            p_k&=\Omega_ce^{j\left(\frac\pi2 + \frac{2k-1}{2N}\pi\right)}
+            =347.18e^{j\left(\frac\pi2 + \frac{2k-1}{28}\pi\right)},
+            & &k=1,2,\dots,14
+        \end{align}
+        Al graficar los polos:
+        
+        \includegraphics[width=14cm]{imagenes/11.2c.png}
+    \end{solution}
+
     \part Gragicar magnitud y fase.
+    \begin{solution}
+        Se obtiene magnitud y fase con
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+[b, a] = zp2tf(z,p,k);
+h = freqs(b,a,Omega);
+h_mag = abs(h);
+h_fase = angle(h);
+        \end{minted}
+        Al graficar:\\
+        \includegraphics[width=14cm]{imagenes/11.2d.png}
+
+        La magnitud tiene una pendiente de $-20N=-280$ dB por octava, y fase
+        disminuye en $-\frac{\pi}{2}N=-7\pi$.
+    \end{solution}
+
     \part Obtener un filtro digital mediante transformación impulso invariante, 
     y graficar magnitud y fase
+
+    \begin{solution}
+        \paragraph{Transformación impulso invariante}
+        La transformación impulso invariante se obtiene realizando:
+        \begin{equation}
+            \boxed{h[n]=T_dh_c(nT_d),\quad T_d\text{ Periodo de muestreo}}
+        \end{equation}
+        Y la respuesta en frecuencia pasa a ser
+        \begin{equation}
+            \boxed{H(e^{j\omega})=
+            \sum_{k=-\infty}^{\infty}
+            H_c\left(j\frac{\omega}{T_d}+j\frac{2\pi}{T_d}k\right)}
+        \end{equation}
+        Es decir, hay aliasing debido al muestreo. A medida que $T_d$ decrece,
+        el aliasing se vuelve despreciable.
+
+        Las frecuencias y los polos se mapean:
+        \begin{align}
+            &\boxed{\omega=\Omega T_d} & &\boxed{p_k=e^{s_kT_d}}
+        \end{align}
+        Asumiendo que se filtran frecuencias
+        hasta $500$ Hz, se escoge $F_d=1000$ Hz por el teorema de muestreo. Es
+        decir $T_d=1/1000$:
+        \begin{equation}
+            h[n]=\frac{1}{1000}h_c\left(\frac{n}{1000}\right)
+        \end{equation}
+        
+        En Matlab:
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+Td = 1/1000;
+[bz, az] = impinvar(b,a, 1/Td);
+
+t = linspace(0,0.12,1000);
+[ht, tout] = impulse(tf(b, a), t); 
+[hn, nT]= impz(bz, az, 120, 1/Td);
+        \end{minted}
+
+        Al graficar magnitud y fase (mapeando las especificaciones según
+        $\omega=\Omega/1000$):\\
+        \includegraphics[width=14cm]{imagenes/11.2e.2.png}\\
+        En la banda de paso y transición, la diferencia con el filtro original
+        es despreciable
+    \end{solution}
+
 \end{parts}
 
 \question Con ayuda de Matlab y usando transformación bilinear, diseñe un filtro
@@ -59,12 +248,159 @@ pasa-bajo de Chebyshev I que cumpla:
     \item Atenuación en banda de rechazo: $A_s=60$ dB
 \end{itemize}
 \begin{parts}
+    
+    \pagebreak
     \part Obtener las frecuencias $\Omega_p$ y $\Omega_s$ equivalentes pare el
     diseño del filtro.
+
+    \begin{solution}
+        Aplicar la transformación bilinear mapea las frecuencias de acuerdo a:
+        \begin{equation}
+            \boxed{\omega=2\tan^{-1}\left(\frac{T_d}{2}\Omega\right)}
+            \longleftrightarrow
+            \boxed{\Omega=\frac{2}{T_d}\tan\left(\frac{\omega}{2}\right)}
+            \quad T_d\text{ arbitrario.}
+        \end{equation}
+        Escogiendo $T_d=2$ a conveniencia:
+        \begin{align}
+            \Omega_p&=\frac{2}{T_d}\tan\left(\frac{\omega_p}{2}\right)
+            & \Omega_s&=\frac{2}{T_d}\tan\left(\frac{\omega_s}{2}\right)    \\
+            %
+            &=\tan\left(\frac{0.2\pi}{2}\right)
+            & &=\tan\left(\frac{0.3\pi}{2}\right) \\
+            %
+            &=0.325
+            & &=0.509
+        \end{align}
+    \end{solution}
+
     \part Obtener $\epsilon$ y $A$ para el diseño.
-    \part Obtener Orden del filtro $N$ y frecuencia de corte $\Omega_c$.
+
+    \begin{solution}
+        Se utilizan las ecuaciones de conversion de especificaciones relativas
+        a análogas:
+        \begin{align}
+            &\boxed{\epsilon=\sqrt{10^{A_p/10}-1}}
+            & &\boxed{A=10^{A_s/20}}
+        \end{align}
+        Sustituyendo:
+        \begin{align}
+            \epsilon&=\sqrt{10^{1/10}-1}
+            & A&=10^{60/20} \\
+            %
+            &=0.509
+            & &=1000
+        \end{align}
+    \end{solution}
+
+    \part Obtener orden del filtro $N$ y frecuencia de corte $\Omega_c$.
+
+    \begin{solution}
+        Se selecciona $\Omega_c=\Omega_p=0.325$
+
+        El orden $N$ se obtiene de acuerdo a las ecuaciones de diseño
+        \begin{align}
+            &\boxed{
+                N\geq\frac
+                {\ln(\beta+\sqrt{\beta^2-1})}
+                {\ln(\alpha+\sqrt{\alpha^2-1})}
+            }
+            & &\boxed{\alpha=\frac{\Omega_s}{\Omega_p}}
+            & &\boxed{\beta=\frac{1}{\epsilon}\sqrt{A^2-1}}
+        \end{align}
+        Reemplazando:
+        \begin{align}
+            \alpha&=\frac{0.509}{0.325}
+            & \beta&=\frac{1}{0.509}\sqrt{1000^2-1}
+            & N&\geq\frac
+                {\ln(\beta+\sqrt{\beta^2-1})}
+                {\ln(\alpha+\sqrt{\alpha^2-1})} \\
+            %
+            &=1.5661
+            & &=1968.5
+            & &\geq8.12 \\
+            %
+            &
+            & &
+            & N&=9
+        \end{align}
+    \end{solution}
+
     \part Obtener en Matlab la función de transferencia y el filtro digital
     usando \texttt{bilinear}, y graficar magnitud y fase de este.
+
+    \begin{solution}
+        La selección de orden $N=9$ y frecuencia de corte $\Omega_c=0.325$ se
+        comprueba en Matlab mediante
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+Omegap = 0.325;
+Ap = 1;
+Omegas = 0.509;
+As = 60;
+[N, Omegac] = cheb1ord(Omegap, Omegas, Ap, As, 's')
+
+N =
+
+     9
+
+Omegac =
+
+    0.3250
+        \end{minted}
+        La función de transerencia y respuesta en frecuencia del filtro digital
+        (aplicando transformación bilinear) se obtiene mediante
+        \begin{minted}[fontsize=\footnotesize]{matlab}
+[b, a] = cheby1(N, Ap, Omegac, 's');
+[bz, az] = bilinear(b, a, 1/Td)
+[hz, w]= freqz(bz, az, 1024); 
+
+bz =
+
+   1.0e-04 *
+
+  Columns 1 through 7
+
+    0.0019    0.0167    0.0667    0.1556    0.2333    0.2333    0.1556
+
+  Columns 8 through 10
+
+    0.0667    0.0167    0.0019
+
+az =
+
+  Columns 1 through 7
+
+    1.0000   -7.5802   26.2987  -54.7173   75.1516  -70.6047   45.3539
+
+  Columns 8 through 10
+
+  -19.2051    4.8651   -0.5620
+        \end{minted}
+        Donde \texttt{bz} y \texttt{az} son numerador y denominador de la
+        función de transferencia:
+        \begin{equation}
+            H_d(z)=\frac{b_0+b_1z^{-1}+b_2z^{-2}+...+b_9z^{-9}}
+            {a_0+a_1z^{-1}+a_2z^{-2}+...+a_9z^{-9}}
+        \end{equation}
+        Esto es equivalente a sustituir en la función de transferencia continua
+        $H_c(s)$
+        por $s=\frac{2}{T_d}\frac{1-z^{-1}}{1+z^{-1}}$:
+        \begin{align}
+            H_c(s)\longrightarrow
+            H_d(z)&=H_c\left(\frac{2}{T_d}\frac{1-z^{-1}}{1+z^{-1}}\right)  \\
+            &=H_c\left(\frac{1-z^{-1}}{1+z^{-1}}\right)
+        \end{align}
+
+        Al graficar magnitud y fase:
+        
+        \includegraphics[width=14cm]{imagenes/12.3d.1.png}
+
+        La magnitud cumple con las especificaciones. Al tratarse de un filtro de
+        Chebyshev tipo I, el filtro exhibe ripple en la banda de paso:
+
+        \includegraphics[width=14cm]{imagenes/12.3d.2.png}
+
+    \end{solution}
 \end{parts}
 
 

@@ -1,4 +1,4 @@
-# Ayudantías de Procesmiento Digital de Señales 2025-2
+# Ayudantías de Procesamiento Digital de Señales 2025-2
 
 Basadas en [Applied Digital Signal Processing](https://github.com/Devin-WEN/UIUC_ECE_310/blob/main/Applied_Digital_Signal_Processing_%20Theory_and_Practice.pdf)
 
@@ -38,3 +38,4 @@ Basadas en [Applied Digital Signal Processing](https://github.com/Devin-WEN/UIUC
 [Solución](ayudantia_10/ayudantia_10_solucion.pdf)
 
 ## [Ayudantía 11](ayudantia_11/ayudantia_11.pdf)
+[Solución](ayudantia_11/ayudantia_11_solucion.pdf)
