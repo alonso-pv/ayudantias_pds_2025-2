@@ -1,0 +1,117 @@
+\documentclass[12pt]{exam}
+\usepackage{../preamble}
+
+% disable para esconder
+\usepackage[enable]{easy-todo}
+
+% Comentar para esconder soluciones
+\printanswers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Inicio del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+    {\Large
+        Ayudantía 12 - Procesamiento Digital de Señales
+    }
+\end{center}
+
+\begin{questions}
+
+\question Dado el siguiente diagrama de flujo de señales\\
+\includegraphics[width=15cm]{imagenes/12.1.png}
+\begin{parts}
+    
+    \part Encontrar la función de transferencia del sistema.
+
+    \part Encontrar una ecuación de diferencias.
+
+\end{parts}
+
+\question Para el sistema dado por la función de transferencia
+\[
+    H(z)=\frac{1+0.5z^{-1}}{1-0.2z^{-1}+0.8z^{-2}}
+\]
+\begin{parts}
+    
+    \part Dibujar estructura en forma directa I.
+
+    \part Dibujar estructura en forma transpuesta II.
+
+\end{parts}
+
+\question Para los siguientes sistemas, identifique el tipo de filtro (IIR o
+FIR) y determine si tiene fase lineal o no:
+\begin{flalign*}
+    H_0:\quad H_0(z)&=\frac{1+0.5z^{-1}}{1-0.2z^{-1}+0.8z^{-2}}
+    & H_3:\quad h_3[n]&=\{4,1,0,-1,-4\}   \\
+    \\
+    H_1:\quad H_1(z)&=3 -2z^{-1} -2z^{-3} +3z^{-4}
+    & H_4:\quad h_4[n]&=\{-5,1,3,-3,-1,5\}\\
+    \\
+    H_2:\quad h_2[n]&=\{5,6,3,3,6,5\}
+    & H_5:\quad h_5[n]&=u[n]-u[n-4]+\delta[n-3]
+\end{flalign*}
+
+\question Hallar magnitud $|H(e^{j\omega})|$, amplitud $A(e^{j\omega})$,  y retardo de
+grupo de:
+\begin{parts}
+
+    \part $H_6(z)= 3 -2z^{-1} -2z^{-3} +3z^{-4}$
+
+    \part $h_7[n]= \{2,2,2,2,2\}$
+
+\end{parts}
+
+\pagebreak
+\question Diseñe un pasabajos digital FIR para una señal con $F_p=500$ Hz y
+$F_s=550$ Hz.
+
+\includegraphics[width=15cm]{imagenes/9.p3.png}
+
+\begin{parts}
+    \part Determine $\omega_p$ y $\omega_s$, si la señal se muestrea con una
+    frecuencia de muestreo $F_m=10$ kHz.
+
+    \part Determine la frecuencia de corte $\omega_c$ y un filtro ideal para el
+    diseño del filtro.
+
+    \part Si los ripples aceptables son $\delta_s=0.073$ y
+    $\delta_p=0.028$, determine una ventana apropiada para el filtro.
+
+    \part Determine el orden y expresión de la respuesta a impulso del filtro.
+\end{parts}
+
+\question Las especificaciones para un filtro IIR son $\omega_p=0.4\pi$,
+$\omega_s=0.5\pi$, $A_p=1$ dB y $A_s = 55$ dB
+
+\begin{parts}
+    \part Determine las frecuencias de diseño si se utiliza transformación
+    bilinear con $T_d=1$.
+
+    \part Determine las frecuencias de diseño si se utiliza impulso invariante
+    con $T=0.005$
+\end{parts}
+
+\question Dada la función de transferencia
+\[
+H_c(s)=\frac{1}{s+1}
+\]
+\begin{parts}
+    \part Aplique transformación bilinear para encontrar el filtro digital
+    $H_d(z)$.
+
+    \part Hallar la frecuencia de corte $\omega_c$ en el plano discreto.
+\end{parts}
+
+\end{questions}
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listoftodos
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Fin del Documento -- %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
