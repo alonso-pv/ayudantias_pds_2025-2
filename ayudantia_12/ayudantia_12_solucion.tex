@@ -24,8 +24,43 @@
 \begin{parts}
     
     \part Encontrar la función de transferencia del sistema.
+    \begin{solution}
+        Extendiendo un poco el diagrama y definiendo variables intermedias
+        $v[n]$ y $w[n]$:\\
+        \includegraphics[width=14cm]{imagenes/12.1a.png}
+        Ecuaciones y F.de Ts. para $v[n]$, $w[n]$ y $y[n]$:
+        \begin{flalign}
+            v[n]&=x[n]+\frac{1}{2}v[n-1]
+            & w[n]&=v[n]-v[n-1]
+            & y[n]&=w[n]-\frac{1}{4}w[n-1] \\
+            %
+            &\downarrow\notag
+            & &\downarrow\notag
+            & &\downarrow\notag \\
+            %
+            \frac{V(z)}{X(z)}&=\frac{1}{1-\frac{1}{2}z^{-1}}
+            & \frac{W(z)}{V(z)}&=1-z^{-1}
+            & \frac{Y(z)}{W(z)}&=\frac{1}{1+\frac{1}{4}z^{-1}}
+        \end{flalign}
+        Finalmente:
+        \begin{gather}
+            H(z)=\frac{Y(z)}{X(z)}=
+            \frac{Y(z)}{W(z)}\cdot
+            \frac{W(z)}{V(z)}\cdot
+            \frac{V(z)}{X(z)}   \\
+            =\frac{1-z^{-1}}{(1+\frac{1}{4}z^{-1})(1-\frac{1}{2}z^{-1})}
+        \end{gather}
+    \end{solution}
 
     \part Encontrar una ecuación de diferencias.
+    \begin{solution}
+        \begin{gather}
+            H(z)=\frac{1-z^{-1}}{(1+\frac{1}{4}z^{-1})(1-\frac{1}{2}z^{-1})}\\
+            \frac{Y(z)}{X(z)}=\frac{1-z^{-1}}{1-\frac{1}{2}z^{-1}-\frac{1}{8}z^{-2}}\\
+            \downarrow\notag\\
+            y[n]=x[n]-x[n-1]+\frac{1}{2}y[n-1]+\frac{1}{8}y[n-2]
+        \end{gather}
+    \end{solution}
 
 \end{parts}
 
@@ -36,8 +71,22 @@
 \begin{parts}
     
     \part Dibujar estructura en forma directa I.
+    \begin{solution}
+        \begin{equation}
+            y[n]=x[n]+0.5x[n-1]\underbrace{+0.2y[n]-0.8y[n-2]}_{\text{Coeficientes se invierten}}
+        \end{equation}
+        Primero ceros de la F. de T., luego polos. Señales se retardan primero y
+        después se multiplican por los coeficientes
+        \\\includegraphics[width=14cm]{imagenes/12.2a.png}
+    \end{solution}
 
+    \pagebreak
     \part Dibujar estructura en forma transpuesta II.
+    \begin{solution}
+        Similar al anterior, pero señales se multiplican por los coeficientes,
+        luego se retardan. Lineas de retardo se unen en una sola.
+        \\\includegraphics[width=10cm]{imagenes/12.2b.png}
+    \end{solution}
 
 \end{parts}
 
@@ -54,13 +103,136 @@ FIR) y determine si tiene fase lineal o no:
     & H_5:\quad h_5[n]&=u[n]-u[n-4]+\delta[n-3]
 \end{flalign*}
 
+\begin{solution} 
+    $\displaystyle H_0:\quad H_0(z)=\frac{1+0.5z^{-1}}{1-0.2z^{-1}+0.8z^{-2}}$
+
+    Filtro tiene retroalimentación, por lo que es IIR.
+    Al ser IIR, causal o anticausal, no tiene fase lineal.
+\end{solution}
+
+\begin{solution}
+    $\displaystyle H_1:\quad H_1(z)=3 -2z^{-1} -2z^{-3} +3z^{-4}$
+
+    \begin{align}
+        h_1[n]=\{3,-2,0,-2,3\}
+    \end{align}
+    Es FIR, simétrica $h_1[n]=h_1[M-n]$, de orden $M=4$ par.
+    
+    Por lo tanto, $H_1$ es FIR tipo I y tiene fase lineal.
+\end{solution}
+
+\begin{solution}
+    $\displaystyle H_2:\quad h_2[n]=\{5,6,3,3,6,5\}$
+    
+    Es FIR, simétrica $h_2[n]=h_2[M-n]$, de orden $M=5$ impar.
+
+    Por lo tanto, $H_2$ es FIR tipo II y tiene fase lineal.
+\end{solution}
+
+\begin{solution}
+    $\displaystyle H_3:\quad h_3[n]=\{4,1,0,-1,-4\}$
+    
+    Es FIR, antisimétrica $h_3[n]=-h_3[M-n]$, de orden $M=4$ par.
+
+    Por lo tanto, $H_3$ es FIR tipo III y tiene fase lineal.
+\end{solution}
+
+\begin{solution}
+    $\displaystyle H_4:\quad h_4[n]=\{-5,1,3,-3,-1,5\}$
+    
+    Es FIR, antisimétrica $h_4[n]=-h_4[M-n]$, de orden $M=5$ impar.
+
+    Por lo tanto, $H_4$ es FIR tipo IV y tiene fase lineal.
+\end{solution}
+
+\begin{solution}
+    $\displaystyle H_5:\quad h_5[n]=u[n]-u[n-4]+\delta[n-3]$
+
+    \includegraphics[width=14cm]{imagenes/12.3.png}
+
+    \begin{equation}
+        h_5[n]=\{1,1,1,2\}
+    \end{equation}
+    Es FIR, pero no tiene respuesta impulso simétrica ni antisimétrica.
+    Por lo tanto no tiene fase lineal.
+\end{solution}
+
 \question Hallar magnitud $|H(e^{j\omega})|$, amplitud $A(e^{j\omega})$,  y retardo de
 grupo de:
 \begin{parts}
 
     \part $H_6(z)= 3 -2z^{-1} -2z^{-3} +3z^{-4}$
+    \begin{solution}
+        \begin{align}
+            H_6(e^{j\omega})&=3 -2e^{-j\omega} -2e^{-3j\omega} +3e^{-4j\omega} \\
+            &=\left(3e^{2j\omega} -2e^{j\omega}
+            -2e^{-j\omega} +3e^{-2j\omega}\right)e^{-2j\omega} \\
+            %
+            &\downarrow\boxed{e^{j\theta}+e^{-j\theta}=2\cos(\theta)}\notag\\
+            %
+            &=\left[6\cos(2\omega)-4\cos(\omega)\right]e^{-2j\omega}
+            =A(e^{j\omega})e^{j\Psi(\omega)}
+        \end{align}
+
+        Por lo tanto:
+        \begin{equation}
+            |H(e^{j\omega})|=\left|6\cos(2\omega)-4\cos(\omega)\right|
+        \end{equation}
+
+        La amplitud:
+        \begin{equation}
+            A(e^{j\omega})=6\cos(2\omega)-4\cos(\omega)
+        \end{equation}
+
+        La respuesta de ángulo y retardo de grupo:
+        \begin{align}
+            &\Psi(\omega)=-2\omega & \tau_{gd}(\omega)&=-\frac{d\Psi}{d\omega} \\
+            %
+            & & &=2
+        \end{align}
+    \end{solution}
 
     \part $h_7[n]= \{2,2,2,2,2\}$
+    \begin{solution}
+        \begin{align}
+            h_7[n]&=2(u[n]-u[n-5]) \\
+            %
+            &\downarrow \mathcal{Z}\notag\\
+            %
+            H_7(z)&=2\frac{1-z^{-5}}{1-z^{-1}}\\
+            %
+            &\downarrow z=e^{j\omega}\notag\\
+            %
+            H_7(e^{j\omega})&=2\frac{1-e^{-5j\omega}}{1-e^{-j\omega}}\cdot
+            \left(\frac{e^{\frac{5}{2}j\omega}e^{-\frac{5}{2}j\omega}}
+            {e^{\frac{1}{2}j\omega}e^{-\frac{1}{2}j\omega}}\right)   \\
+            %
+            &=2\frac{e^{\frac{5}{2}j\omega}-e^{-\frac{5}{2}j\omega}}
+            {e^{\frac{1}{2}j\omega}-e^{-\frac{1}{2}j\omega}}
+            \cdot e^{-2j\omega} \\
+            %
+            &=2\frac{\sin(5\omega/2)}{\sin(\omega/2)}\cdot e^{-2j\omega}
+            =A(e^{j\omega})e^{j\Psi(\omega)}
+        \end{align}
+
+        Por lo tanto:
+        \begin{equation}
+            |H(e^j\omega)|=2\left|\frac{\sin(5\omega/2)}{\sin(\omega/2)}\right|
+        \end{equation}
+        
+        La amplitud:
+        \begin{equation}
+            A(e^{j\omega})=2\frac{\sin(5\omega/2)}{\sin(\omega/2)}
+        \end{equation}
+
+        La respuesta de ángulo y retardo de grupo:
+        \begin{align}
+            &\Psi(\omega)=-2\omega & \tau_{gd}(\omega)&=-\frac{d\Psi}{d\omega} \\
+            %
+            & & &=2
+        \end{align}
+        
+    \end{solution}
 
 \end{parts}
 
@@ -73,14 +245,59 @@ $F_s=550$ Hz.
 \begin{parts}
     \part Determine $\omega_p$ y $\omega_s$, si la señal se muestrea con una
     frecuencia de muestreo $F_m=10$ kHz.
+    \begin{solution}
+        \begin{align}
+            &\omega_p=2\pi\frac{F_p}{F_m}=0.1\pi
+            & &\omega_s=2\pi\frac{F_s}{F_m}=0.11\pi
+        \end{align}
+    \end{solution}
 
     \part Determine la frecuencia de corte $\omega_c$ y un filtro ideal para el
     diseño del filtro.
+    \begin{solution}
+        \begin{align}
+            \omega_c &= \frac{\omega_p+\omega_s}{2}
+            & h_{\text{ideal}}[n]&=\frac{\sin(\omega_c)[n-M/2]}{\pi[n-M/2]}\\
+            %
+            &=0.105\pi
+            & &=\frac{\sin(0.105\pi)[n-M/2]}{\pi[n-M/2]}
+        \end{align}
+    \end{solution}
 
     \part Si los ripples aceptables son $\delta_s=0.073$ y
     $\delta_p=0.028$, determine una ventana apropiada para el filtro.
+    \begin{solution}
+        \begin{align}
+            \delta&=\min\{\delta_s,\delta_p\}
+            & A&=-20\log(\delta)\\
+            %
+            &=0.028
+            & &=71.5 \text{ dB}
+        \end{align}
+
+        De la tabla (columna $A_s$ \textbf{dB}): $74>71.5\longrightarrow$ Blackman
+    \end{solution}
 
     \part Determine el orden y expresión de la respuesta a impulso del filtro.
+    \begin{solution}
+        \begin{equation}
+            \Delta\omega=\omega_s-\omega_p=0.01\pi
+        \end{equation}
+        De la tabla (columna \textbf{Exact} $\Delta\omega$, ventana Blackman):
+        $\Delta\omega=11\pi/L$
+        \begin{align}
+            0.01\pi=11\pi/L\longrightarrow L=1100\longrightarrow M=1099=L-1
+        \end{align}
+
+        Considerando esto, la respuesta a impulso $h[n]$ del filtro FIR queda:
+        \begin{equation} 
+            h[n]=
+            h_{\text{ideal}}[n]\cdot w_\text{Blackman}[n]=
+            \frac{\sin(\omega_c)[n-1099/2]}{\pi[n-1099/2]}\cdot w_\text{Blackman}[n]\\
+        \end{equation}
+        Con $w_\text{Blackman}[n]$ ventana de Blackman de largo $L=1100$
+    \end{solution}
+
 \end{parts}
 
 \question Las especificaciones para un filtro IIR son $\omega_p=0.4\pi$,
@@ -89,9 +306,38 @@ $\omega_s=0.5\pi$, $A_p=1$ dB y $A_s = 55$ dB
 \begin{parts}
     \part Determine las frecuencias de diseño si se utiliza transformación
     bilinear con $T_d=1$.
+    \begin{solution}
+    \begin{align}
+        \Omega_p&=\frac{2}{T_d}\tan\left(\frac{\omega_p}{2}\right)
+        & \Omega_s&=\frac{2}{T_d}\tan\left(\frac{\omega_s}{2}\right)
+        \\
+        &=2\tan\left(\frac{0.4\pi}{2}\right)
+        & &=2\tan\left(\frac{0.5\pi}{2}\right)
+        \\
+        &=1.4531
+        & &=2
+    \end{align}
+    \end{solution}
 
     \part Determine las frecuencias de diseño si se utiliza impulso invariante
     con $T=0.005$
+    \begin{solution}
+        \begin{equation}
+            \omega=2\pi\frac{F}{F_m}=\frac{\Omega}{F_m}=\Omega T
+            \longrightarrow\Omega=\frac{\omega}{T}
+        \end{equation}
+
+        \begin{align}
+            \Omega_p&=\frac{\omega_p}{T}
+            & \Omega_s&=\frac{\omega_s}{T}
+            \\
+            &=\frac{0.4\pi}{0.005}
+            & &=\frac{0.5\pi}{0.005}
+            \\
+            &=80\pi
+            & &=100\pi
+        \end{align}
+    \end{solution}
 \end{parts}
 
 \question Dada la función de transferencia
@@ -101,8 +347,34 @@ H_c(s)=\frac{1}{s+1}
 \begin{parts}
     \part Aplique transformación bilinear para encontrar el filtro digital
     $H_d(z)$.
+    \begin{solution}
+        Transformación bilinear: $\displaystyle s=\frac{2}{T_d}\frac{1-z^{-1}}{1+z^{-1}}$
+
+        Escogiendo $T_d$ por conveniencia:
+        \begin{align}
+            \left.H_c(s)\right|_{s=\frac{1-z^{-1}}{1+z^{-1}}}
+            &=\frac{1}{\frac{1-z^{-1}}{1+z^{-1}}+1}
+            \cdot\left(\frac{1+z^{-1}}{1+z^{-1}}\right)
+            \\
+            &=\frac{1+z^{-1}}{2}
+            \\
+            &=0.5+0.5z^{-1}
+        \end{align}
+    \end{solution}
 
     \part Hallar la frecuencia de corte $\omega_c$ en el plano discreto.
+    \begin{solution}
+        El filtro $H_c(s)$ es un pasabajo de primer orden con frecuencia de corte
+        $\Omega_c=1$
+
+        Tomando en cuenta que se escogió $T_d=2$:
+        \begin{align}
+            \omega_c&=2\tan^{-1}\left(\Omega_c\frac{T_d}{2}\right)\\
+            &=2\tan^{-1}\left(1\frac{2}{2}\right)\\
+            &=\pi/2=1.57
+        \end{align}
+
+    \end{solution}
 \end{parts}
 
 \end{questions}
