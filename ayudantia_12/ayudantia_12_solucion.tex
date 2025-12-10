@@ -257,10 +257,10 @@ $F_s=550$ Hz.
     \begin{solution}
         \begin{align}
             \omega_c &= \frac{\omega_p+\omega_s}{2}
-            & h_{\text{ideal}}[n]&=\frac{\sin(\omega_c)[n-M/2]}{\pi[n-M/2]}\\
+            & h_{\text{ideal}}[n]&=\frac{\sin(\omega_c[n-M/2])}{\pi[n-M/2]}\\
             %
             &=0.105\pi
-            & &=\frac{\sin(0.105\pi)[n-M/2]}{\pi[n-M/2]}
+            & &=\frac{\sin(0.105\pi[n-M/2])}{\pi[n-M/2]}
         \end{align}
     \end{solution}
 
@@ -272,10 +272,10 @@ $F_s=550$ Hz.
             & A&=-20\log(\delta)\\
             %
             &=0.028
-            & &=71.5 \text{ dB}
+            & &=31.05 \text{ dB}
         \end{align}
 
-        De la tabla (columna $A_s$ \textbf{dB}): $74>71.5\longrightarrow$ Blackman
+        De la tabla (columna $A_s$ \textbf{dB}): $44>31.05\longrightarrow$ Hann
     \end{solution}
 
     \part Determine el orden y expresión de la respuesta a impulso del filtro.
@@ -283,19 +283,19 @@ $F_s=550$ Hz.
         \begin{equation}
             \Delta\omega=\omega_s-\omega_p=0.01\pi
         \end{equation}
-        De la tabla (columna \textbf{Exact} $\Delta\omega$, ventana Blackman):
-        $\Delta\omega=11\pi/L$
+        De la tabla (columna \textbf{Exact} $\Delta\omega$, ventana Hann):
+        $\Delta\omega=6.2\pi/L$
         \begin{align}
-            0.01\pi=11\pi/L\longrightarrow L=1100\longrightarrow M=1099=L-1
+            0.01\pi=6.2\pi/L\longrightarrow L=620\longrightarrow M=619=L-1
         \end{align}
 
         Considerando esto, la respuesta a impulso $h[n]$ del filtro FIR queda:
         \begin{equation} 
             h[n]=
-            h_{\text{ideal}}[n]\cdot w_\text{Blackman}[n]=
-            \frac{\sin(\omega_c)[n-1099/2]}{\pi[n-1099/2]}\cdot w_\text{Blackman}[n]\\
+            h_{\text{ideal}}[n]\cdot w_\text{Hann}[n]=
+            \frac{\sin(0.105\pi[n-619/2])}{\pi[n-619/2]}\cdot w_\text{Hann}[n]\\
         \end{equation}
-        Con $w_\text{Blackman}[n]$ ventana de Blackman de largo $L=1100$
+        Con $w_\text{Hann}[n]$ ventana de Hann de largo $L=620$
     \end{solution}
 
 \end{parts}
