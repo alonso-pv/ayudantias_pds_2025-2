@@ -28,6 +28,7 @@
         Extendiendo un poco el diagrama y definiendo variables intermedias
         $v[n]$ y $w[n]$:\\
         \includegraphics[width=14cm]{imagenes/12.1a.png}
+
         Ecuaciones y F.de Ts. para $v[n]$, $w[n]$ y $y[n]$:
         \begin{flalign}
             v[n]&=x[n]+\frac{1}{2}v[n-1]
@@ -56,9 +57,9 @@
     \begin{solution}
         \begin{gather}
             H(z)=\frac{1-z^{-1}}{(1+\frac{1}{4}z^{-1})(1-\frac{1}{2}z^{-1})}\\
-            \frac{Y(z)}{X(z)}=\frac{1-z^{-1}}{1-\frac{1}{2}z^{-1}-\frac{1}{8}z^{-2}}\\
+            \frac{Y(z)}{X(z)}=\frac{1-z^{-1}}{1-\frac{1}{4}z^{-1}-\frac{1}{8}z^{-2}}\\
             \downarrow\notag\\
-            y[n]=x[n]-x[n-1]+\frac{1}{2}y[n-1]+\frac{1}{8}y[n-2]
+            y[n]=x[n]-x[n-1]+\frac{1}{4}y[n-1]+\frac{1}{8}y[n-2]
         \end{gather}
     \end{solution}
 
